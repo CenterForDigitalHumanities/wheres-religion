@@ -15,7 +15,7 @@ class SiteNav extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
     <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
+      <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
         <ul class="right hide-on-med-and-down">
           <li><a href="/dashboard.html">Dashboard</a></li>
           <li><a href="/entry.html">Entry</a></li>
@@ -23,9 +23,9 @@ class SiteNav extends HTMLElement {
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
-          <li><a href="/dashboard.html">Dashboard</a></li>
-          <li><a href="/entry.html">Entry</a></li>
-          <li><a href="/fieldnotes.html">Fieldnotes</a></li>
+          <li><a href="/dashboard.html"><i class="material-icons">speed</i>Dashboard</a></li>
+          <li><a href="/entry.html"><i class="material-icons">snippet_folder</i>Entry</a></li>
+          <li><a href="/fieldnotes.html"><i class="material-icons">edit_note</i>Fieldnotes</a></li>
         </ul>
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       </div>
