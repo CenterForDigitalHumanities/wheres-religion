@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="apple-touch-icon" sizes="180x180" href="/css/graphics/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/css/graphics/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/css/graphics/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+    <title>Record Media - Where's Religion</title>
+
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="js/materialize.js"></script>
+    <script src="js/init.js" defer></script>
+</head>
+
+<body>
+    <site-nav></site-nav>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col" style="width: 100%;">
+                    <h5 class="center">Upload Media of Your Surroundings</h5>
+<!--                     <p class="light">
+                        Here you are focused on some Experience, Person, Location, or Thing entity.
+                        You would like to take a photo/video/audio recording on the spot, then associate
+                        that media with the resource.  To do so, we will need to perform a file upload
+                        and generate/update the Annotation connecting this piece of the media to the entity.
+                        Click below to upload.
+                    </p> -->
+                    <div onclick="mediaCapture('camera')" class="center card dropdown-trigger">
+                        <span title="Open your camera to take a picture or record a video" class="light">Tap Here to Use Camera</span><br>
+                        <i title="Tap here to open your camera to take a picture or record a video" class="material-icons large light-blue-text">camera_enhance</i>
+                    </div><br><br>
+                    <div onclick="mediaCapture('recorder')" class="center card dropdown-trigger">
+                        <span title="Open your sound recorder to capture audio" class="light">Tap Here to Use Recorder</span><br>
+                        <i title="Tap here to Open your sound recorder to capture audio" class="material-icons large light-blue-text">settings_voice</i>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col" style="width: 100%;">
+                    <h5 class="center">Media Preview</h5>
+                    <div class="center" id="mediaPreview">
+                        <img src="http://placekitten.com/300/150" style="width:100%;">
+                    </div>
+                    <div class="center">
+                        <div class="dropdown-trigger" style="display: inline-block;">
+                            <span title="Upload this media to Lived Religion in the Digital Age" class="light">Tap Here to Upload</span><br>
+                            <i title="Tap here to upload this media to Lived Religion in the Digital Age" class="material-icons medium light-blue-text">cloud_upload</i>
+                        </div>
+                        <div class="dropdown-trigger" style="display: inline-block;">
+                            <span title="Re-capture this media" class="light">Tap Here to Retake</span><br>
+                            <i title="Tap here to remove this media and attempt to recapture" class="material-icons medium light-blue-text">party_mode</i>
+                        </div>
+                        <div class="dropdown-trigger" style="display: inline-block;">
+                            <span title="Forget this media, it is no good." class="light">Tap Here to Cancel</span><br>
+                            <i title="Tap here to start over" class="material-icons medium light-blue-text">no_photography</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <site-footer></site-footer>
+    <script>
+        /**
+        * 
+        */
+        function mediaCapture(which){
+            // Figure out whether they want to take a picture, a video, or do an audio recording
+            // Once complete, build it into #mediaPreview with the metadata information showing
+            // Offer a button to submit (upload), retake (back to camera or recorder), or cancel (clear the preview)
+        }
+    </script>
+</body>
+
+</html>
