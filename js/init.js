@@ -1,6 +1,6 @@
 // Path: js\init.js
-(function($){
-  $(function(){
+(function ($) {
+  $(function () {
 
     $('.sidenav').sidenav()
 
