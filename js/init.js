@@ -14,6 +14,7 @@ class SiteNav extends HTMLElement {
   }
   connectedCallback() {
     this.innerHTML = `
+    <div class="navbar-fixed">
     <nav class="light-blue lighten-1" role="navigation">
       <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
         <ul class="right hide-on-med-and-down">
@@ -30,6 +31,7 @@ class SiteNav extends HTMLElement {
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       </div>
     </nav>
+    </div>
     `
   }
 }
@@ -76,7 +78,35 @@ class SiteFooter extends HTMLElement {
       </div>
     </div>
   </footer>
+  <quick-actions></quick-actions>
   `
   }
 }
 customElements.define('site-footer', SiteFooter)
+
+class quickActions extends HTMLElement {
+  constructor() {
+    super()
+  }
+  connectedCallback() {
+    this.innerHTML = `
+    <div class="navbar-fixed hide-on-med-and-up">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <ul class="center">
+        </ul>
+      </div>
+    </nav>
+    </div>
+  `
+  }
+  addAction(label, icon, link) {
+    const action = document.createElement('li')
+    action.innerHTML = `<a href="${link}" title="${label}"><i class="material-icons left">${icon}</i></a>`
+    this.querySelector('ul').append(action)
+  }
+  removeAction(link) {
+    $(`a[href="${link}"]`).parent().remove()
+  }
+}
+customElements.define('quick-actions', quickActions)

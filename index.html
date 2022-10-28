@@ -18,6 +18,14 @@
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js" defer></script>
+  <script>
+    $(document).ready(function () {
+      $('quick-actions')[0].addAction('Dashboard','speed','/dashboard.html')
+      $('quick-actions')[0].addAction('Entry','snippet_folder','/entry.html')
+      $('quick-actions')[0].addAction('Fieldnotes','edit_note','/fieldnotes.html')
+    });
+  </script>
+</li>
 </head>
 
 <body>
