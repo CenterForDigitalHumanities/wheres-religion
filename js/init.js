@@ -17,9 +17,9 @@ class SiteNav extends HTMLElement {
     <nav class="light-blue lighten-1" role="navigation">
       <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
         <ul class="right hide-on-med-and-down">
-          <li><a href="/dashboard.html">Dashboard</a></li>
-          <li><a href="/entry.html">Entry</a></li>
-          <li><a href="/fieldnotes.html">Fieldnotes</a></li>
+          <li><a href="/dashboard.html">Dashboard<i class="material-icons right">speed</i></a></li>
+          <li><a href="/entry.html">Entry<i class="material-icons right">snippet_folder</i></a></li>
+          <li><a href="/fieldnotes.html">Fieldnotes<i class="material-icons right">edit_note</i></a></li>
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
@@ -42,7 +42,7 @@ class SiteFooter extends HTMLElement {
   }
   connectedCallback() {
     this.innerHTML = `
-    <footer class="page-footer deep-purple">
+    <footer class="page-footer deep-purple hide-on-small-and-down">
     <div class="container">
       <div class="row">
         <div class="col l6 s12">
