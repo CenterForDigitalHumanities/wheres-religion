@@ -18,6 +18,12 @@
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="js/materialize.js"></script>
     <script src="js/init.js" defer></script>
+    <style>
+        .previewImg{
+            max-width: 30em;
+            max-height: 20em;
+        }
+    </style>
 </head>
 
 <body>
@@ -92,12 +98,12 @@
               let itIsAnImage = true
               let itIsAVideo = false
               let itIsAudio = false
-              
+
               if(itIsAnImage){
                 let imgPreview
                 const reader = new FileReader()
                 reader.onload = (e) => {
-                    imgPreview = `<img src="${e.target.result}" alt="Captured Image" />`
+                    imgPreview = `<img class="previewImg" src="${e.target.result}" alt="Captured Image" />`
                     preview.innerHTML = imgPreview
                 }
                 reader.readAsDataURL(file)
