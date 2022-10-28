@@ -89,11 +89,18 @@
               mediaPreview.querySelector('.fileType').innerHTML = 'Type: ' + file.type;
               //mediaPreview.querySelector('.mediastatus').innerHTML = "File chosen.  Click 'Upload' to upload."
 
-              let itIsAnImage
-              let itIsAVideo
-              let itIsAudio
+              let itIsAnImage = true
+              let itIsAVideo = false
+              let itIsAudio = false
+              
               if(itIsAnImage){
-                //Build a preview
+                let imgPreview
+                const reader = new FileReader()
+                reader.onload = (e) => {
+                    imgPreview = `<img src="${e.target.result}" alt="Captured Image" />`
+                    preview.innerHTML = imgPreview
+                }
+                reader.readAsDataURL(file)
               }
               else if(itIsAVideo){
                 //Build a preview
