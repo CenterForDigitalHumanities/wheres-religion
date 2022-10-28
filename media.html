@@ -27,16 +27,10 @@
             <div class="row">
                 <div class="col" style="width: 100%;">
                     <h5 class="center">Upload Media of Your Surroundings</h5>
-<!--                     <p class="light">
-                        Here you are focused on some Experience, Person, Location, or Thing entity.
-                        You would like to take a photo/video/audio recording on the spot, then associate
-                        that media with the resource.  To do so, we will need to perform a file upload
-                        and generate/update the Annotation connecting this piece of the media to the entity.
-                        Click below to upload.
-                    </p> -->
-                    <div onclick="mediaCapture('camera')" class="center card dropdown-trigger">
+                    <div onclick="mediaCapture('camera', event)" class="center card dropdown-trigger">
                         <span title="Open your camera to take a picture or record a video" class="light">Tap Here to Use Camera</span><br>
                         <i title="Tap here to open your camera to take a picture or record a video" class="material-icons large light-blue-text">camera_enhance</i>
+                        <input hidden type="file" name="file" accept="image/*" capture="environment" onchange="fileSelected(event)" />
                     </div><br><br>
                     <div onclick="mediaCapture('recorder')" class="center card dropdown-trigger">
                         <span title="Open your sound recorder to capture audio" class="light">Tap Here to Use Recorder</span><br>
@@ -45,12 +39,15 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col" style="width: 100%;">
+                <div id="mediaPreview" class="col" style="width: 100%;">
                     <h5 class="center">Media Preview</h5>
-                    <div class="center" id="mediaPreview">
-                        <img src="http://placekitten.com/300/150" style="width:100%;">
+                    <div class="center fileName"></div>
+                    <div class="center fileSize"></div>
+                    <div class="center fileType"></div>
+                    <div class="center" id="preview">
+                        
                     </div>
-                    <div class="center">
+                    <div class="center" style="margin-top: 2em;">
                         <div class="dropdown-trigger" style="display: inline-block;">
                             <span title="Upload this media to Lived Religion in the Digital Age" class="light">Tap Here to Upload</span><br>
                             <i title="Tap here to upload this media to Lived Religion in the Digital Age" class="material-icons medium light-blue-text">cloud_upload</i>
@@ -70,14 +67,144 @@
     </div>
     <site-footer></site-footer>
     <script>
+        const S3_URI_PREFIX = "https://livedreligion.s3.amazonaws.com/"
+        const S3_PROXY_PREFIX = "http://s3-proxy.rerum.io/S3/"
+
+        /**
+         * User has chosen and confirmed the file.  Let's upload it.
+         * @param {type} event
+         * @return {undefined}
+         */
+        function fileSelected(event) {
+            let file = event.target.files[0]
+            if (file) {
+              var fileSize = 0;
+              if (file.size > 1024 * 1024)
+                fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+              else
+                fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+
+              mediaPreview.querySelector('.fileName').innerHTML = 'Name: ' + file.name;
+              mediaPreview.querySelector('.fileSize').innerHTML = 'Size: ' + fileSize;
+              mediaPreview.querySelector('.fileType').innerHTML = 'Type: ' + file.type;
+              //mediaPreview.querySelector('.mediastatus').innerHTML = "File chosen.  Click 'Upload' to upload."
+
+              let itIsAnImage
+              let itIsAVideo
+              let itIsAudio
+              if(itIsAnImage){
+                //Build a preview
+              }
+              else if(itIsAVideo){
+                //Build a preview
+              }
+              else if(itIsAudio){
+                //Build a preview
+              }
+            }
+        }
         /**
         * 
         */
-        function mediaCapture(which){
-            // Figure out whether they want to take a picture, a video, or do an audio recording
-            // Once complete, build it into #mediaPreview with the metadata information showing
-            // Offer a button to submit (upload), retake (back to camera or recorder), or cancel (clear the preview)
+        function mediaCapture(which, event){
+            let elem = event.target
+            if(event.target.tagName==="INPUT"){
+                return
+            }
+            else if(event.target.tagName !== "DIV"){
+                event.stopPropagation()
+                event.preventDefault()
+                event.target.parentElement.click()
+                return
+            }
+            else{
+                event.stopPropagation()
+                event.preventDefault()
+                event.target.querySelector("input").click()
+            }
         }
+
+        /**
+ * Media upload component functionality.  
+ * Perhaps this could be abstracted to DEER.
+ */
+
+function uploadFile(event){
+    let media_component = event.target.closest("lr-media-upload")
+    media_component.querySelector('.mediastatus').innerHTML = "Uploading, please wait..."
+    let file = media_component.querySelector("input[type='file']").files[0]
+    var data = new FormData()
+    data.append('file', file)
+    fetch(LR.media.S3_PROXY_PREFIX+"uploadFile", {
+        method: "POST",
+        mode: "cors",
+        body: data
+    })
+    .then(resp => {
+        console.log("Got the response from the upload file servlet");
+        if(resp.ok) LR.media.uploadComplete(resp.headers.get("Location"), media_component)
+        else resp.text().then(text => LR.media.uploadFailed(text, media_component))
+    })
+    .catch(err => {
+        console.error(err)
+        LR.media.uploadFailed(err, media_component)
+    })
+}
+
+
+/**
+ * The file upload was successful.  Make sure the list of connected media files includes this new one.
+ * @param {type} uri
+ * @param {type} form_elem
+ * @return {undefined}
+ */
+function uploadComplete(uri, media_component){
+    //The form_elem is inside lr-media-upload.  The input[deer-key] to place a value on and make dirty is the next element.
+    let key = media_component.getAttribute("media-key")
+    let deer_input = media_component.querySelector("input[deer-key='"+key+"']")
+    //let deer_input = media_component.nextElementSibling //maybe we can just do this?  I think we can make it a convention to say it is alway the next sibling.
+    
+    //It is a Set, so make sure to add commas when you need to
+    deer_input.value = (deer_input.value) ? deer_input.value+","+uri : uri
+    deer_input.setAttribute("value", deer_input.value)
+    deer_input.$isDirty = true
+    
+    // Create the event.
+    let event = document.createEvent('Event')
+    event.initEvent('media-upload-success', true, true);
+    event.target = media_component
+    LR.utils.broadcastEvent(event, "fileUploadSuccess", media_component, { message: "File upload Successful!", 'uri':uri})
+    media_component.querySelector('.mediastatus').innerHTML = "Upload Complete.  Don't forget to submit!"
+    //Note this is not actually saved to an annotation until the user submits the archtype form!  All they have done is changed an input tracking these values!!
+}
+
+function uploadFailed(message, media_component){
+    media_component.querySelector('.mediastatus').innerHTML = message
+    console.error("upload failed")
+    console.error(message)
+    let deer_input = media_component.querySelector("input[deer-key]")
+    deer_input.$isDirty = false
+    // Create the event.
+    let event = document.createEvent('Event')
+    event.initEvent('media-upload-fail', true, true);
+    event.target = media_component
+    LR.utils.broadcastEvent(event, "fileUploadFailed", media_component, { message: message })
+    media_component.querySelector('.mediastatus').innerHTML = "Upload Failed."
+}
+
+function uploadCancelled(message="Upload Cancelled", media_component) {
+    media_component.querySelector('.mediastatus').innerHTML = message
+    console.error("upload failed")
+    console.error(message)
+    let deer_input = media_component.querySelector("input[deer-key]")
+    deer_input.$isDirty = false
+        // Create the event.
+    let event = document.createEvent('Event')
+    event.initEvent('media-upload-cancelled', true, true);
+    event.target = media_component
+    LR.utils.broadcastEvent(event, "fileUploadCancelled", media_component, { message: message })
+    media_component.querySelector('.mediastatus').innerHTML = "Upload Cancelled"
+}
     </script>
 </body>
 
