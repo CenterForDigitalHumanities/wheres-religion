@@ -1,14 +1,98 @@
-/* Custom Stylesheet */
-/**
- * Use this file to override Materialize files so you can update
- * the core Materialize files in the future
- *
- * Made By MaterializeCSS.com
- */
+/* Fonts */
+@font-face {
+  font-family: 'wr_bold';
+  src: url('/css/fonts/wr-bold-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_bold_italic';
+  src: url('/css/fonts/wr-bolditalic-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-bolditalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_italic';
+  src: url('/css/fonts/wr-italic-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-italic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_light';
+  src: url('/css/fonts/wr-light-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-light-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_light_italic';
+  src: url('/css/fonts/wr-lightitalic-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-lightitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_regular';
+  src: url('/css/fonts/wr-regular-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_semibold';
+  src: url('/css/fonts/wr-semibold-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-semibold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_semibold_italic';
+  src: url('/css/fonts/wr-semibolditalic-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-semibolditalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_thin';
+  src: url('/css/fonts/wr-thin-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-thin-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'wr_thin_italic';
+  src: url('/css/fonts/wr-thinitalic-webfont.woff2') format('woff2'),
+    url('/css/fonts/wr-thinitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 .icon-block {
   padding: 0 15px;
 }
+
 .icon-block .material-icons {
-	font-size: inherit;
+  font-size: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'wr_bold', sans-serif;
+  font-weight: 400;
 }
