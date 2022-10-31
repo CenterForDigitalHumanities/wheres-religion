@@ -14,7 +14,7 @@ class SiteNav extends HTMLElement {
   }
   connectedCallback() {
     this.innerHTML = `
-    <div class="navbar-fixed">
+    <div class="navbar-fixed hide-on-small-and-down">
     <nav class="light-blue lighten-1" role="navigation">
       <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
         <ul class="right hide-on-med-and-down">
@@ -32,6 +32,22 @@ class SiteNav extends HTMLElement {
       </div>
     </nav>
     </div>
+    <nav class="light-blue lighten-1 show-on-sm" role="navigation">
+      <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="/dashboard.html">Dashboard<i class="material-icons right">speed</i></a></li>
+          <li><a href="/entry.html">Entry<i class="material-icons right">snippet_folder</i></a></li>
+          <li><a href="/fieldnotes.html">Fieldnotes<i class="material-icons right">edit_note</i></a></li>
+        </ul>
+
+        <ul id="nav-mobile" class="sidenav">
+          <li><a href="/dashboard.html"><i class="material-icons">speed</i>Dashboard</a></li>
+          <li><a href="/entry.html"><i class="material-icons">snippet_folder</i>Entry</a></li>
+          <li><a href="/fieldnotes.html"><i class="material-icons">edit_note</i>Fieldnotes</a></li>
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      </div>
+    </nav>
     `
   }
 }
@@ -94,6 +110,7 @@ class quickActions extends HTMLElement {
     <nav class="light-blue lighten-1" role="navigation">
       <div class="nav-wrapper container">
         <ul class="center">
+          <li><a href="/dashboard.html"><i class="material-icons left">speed</i></a></li>
         </ul>
       </div>
     </nav>
