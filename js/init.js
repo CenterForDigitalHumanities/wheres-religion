@@ -61,6 +61,7 @@ class SiteFooter extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
     <footer class="page-footer deep-purple hide-on-small-and-down">
+
     <div class="container">
       <div class="row">
         <div class="col l6 s12">
@@ -126,3 +127,4 @@ class quickActions extends HTMLElement {
   }
 }
 customElements.define('quick-actions', quickActions)
+
