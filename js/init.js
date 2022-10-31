@@ -32,7 +32,7 @@ class SiteNav extends HTMLElement {
       </div>
     </nav>
     </div>
-    <nav class="light-blue lighten-1 show-on-sm" role="navigation">
+    <nav class="light-blue lighten-1 hide-on-med-and-up" role="navigation">
       <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
         <ul class="right hide-on-med-and-down">
           <li><a href="/dashboard.html">Dashboard<i class="material-icons right">speed</i></a></li>
