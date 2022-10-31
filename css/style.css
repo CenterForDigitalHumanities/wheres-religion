@@ -96,3 +96,6 @@ h6 {
   font-family: 'wr_bold', sans-serif;
   font-weight: 400;
 }
+quick-actions nav {
+  bottom:0;
+}
