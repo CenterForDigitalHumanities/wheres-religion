@@ -87,6 +87,15 @@
   font-size: inherit;
 }
 
+quick-actions i.material-icons+span {
+  margin-top: -32px;
+  display: block;
+}
+
+quick-actions a i.material-icons {
+  margin-top: -12px;
+}
+
 h1,
 h2,
 h3,

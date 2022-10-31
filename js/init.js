@@ -110,7 +110,6 @@ class quickActions extends HTMLElement {
     <nav class="light-blue lighten-1" role="navigation">
       <div class="nav-wrapper container">
         <ul class="center">
-          <li><a href="/dashboard.html"><i class="material-icons left">speed</i></a></li>
         </ul>
       </div>
     </nav>
@@ -119,7 +118,7 @@ class quickActions extends HTMLElement {
   }
   addAction(label, icon, link) {
     const action = document.createElement('li')
-    action.innerHTML = `<a href="${link}" title="${label}"><i class="material-icons left">${icon}</i></a>`
+    action.innerHTML = `<a href="${link}" title="${label}"><i class="material-icons">${icon}</i><span>${label}</span></a>`
     this.querySelector('ul').append(action)
   }
   removeAction(link) {
