@@ -18,6 +18,14 @@
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js" defer></script>
+  <script>
+    $(document).ready(function () {
+      $('quick-actions')[0].addAction('Capture Media','add_a_photo','/media.html')
+      $('quick-actions')[0].addAction('New Location','pin_drop','/location.html')
+      $('quick-actions')[0].addAction('New Experience','edit_calender','/experience.html')
+    })
+  </script>
+
 </head>
 
 <body>
