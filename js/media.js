@@ -136,6 +136,6 @@ function uploadCancelled(message="Upload Cancelled ;(") {
     setTimeout(() => {
         mediaPreview.querySelector('.mediastatus').innerHTML=""
     }, 3000)
-    document.querySelector("input.selected").classList.remove("selected")
+    document.querySelector("input.selected")?.classList.remove("selected")
     preview.innerHTML = ""
 }
