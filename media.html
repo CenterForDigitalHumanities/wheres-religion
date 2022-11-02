@@ -38,6 +38,9 @@
             max-width: 30em;
             max-height: 20em;
         }
+        .action{
+            margin:  0px 2em;
+        }
     </style>
 </head>
 
@@ -71,15 +74,15 @@
                     </div>
                     <div class="center" style="margin-top: 2em;">
                         <div class="center mediastatus"></div>
-                        <div onclick="uploadFile()" class="dropdown-trigger" style="display: inline-block;">
+                        <div onclick="uploadFile()" class="action dropdown-trigger" style="display: inline-block;">
                             <span title="Upload this media to Lived Religion in the Digital Age" class="light">Upload</span><br>
                             <i title="Tap here to upload this media to Lived Religion in the Digital Age" class="material-icons medium light-blue-text">cloud_upload</i>
                         </div>
-                        <div onclick="mediaRecapture()" class="dropdown-trigger" style="display: inline-block;">
+                        <div onclick="mediaRecapture()" class="action dropdown-trigger" style="display: inline-block;">
                             <span title="Re-capture this media" class="light">Recapture</span><br>
                             <i title="Tap here to remove this media and attempt to recapture" class="material-icons medium light-blue-text">party_mode</i>
                         </div>
-                        <div onclick="uploadCancelled()" class="dropdown-trigger" style="display: inline-block;">
+                        <div onclick="uploadCancelled()" class="action dropdown-trigger" style="display: inline-block;">
                             <span title="Forget this media, it is no good." class="light">Reset</span><br>
                             <i title="Tap here to start over" class="material-icons medium light-blue-text">no_photography</i>
                         </div>
