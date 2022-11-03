@@ -83,15 +83,15 @@ function uploadFile() {
         mode: "cors",
         body: data
     })
-        .then(resp => {
-            console.log("Got the response from the upload file servlet");
-            if (resp.ok) { return uploadComplete(resp.headers.get("Location")) }
-            resp.text().then(text => uploadFailed(text))
-        })
-        .catch(err => {
-            console.error(err)
-            uploadFailed(err)
-        })
+    .then(resp => {
+        console.log("Got the response from the upload file servlet");
+        if (resp.ok) { return uploadComplete(resp.headers.get("Location")) }
+        resp.text().then(text => uploadFailed(text))
+    })
+    .catch(err => {
+        console.error(err)
+        uploadFailed(err)
+    })
 }
 
 
