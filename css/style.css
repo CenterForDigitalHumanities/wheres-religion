@@ -10,7 +10,7 @@
 @font-face {
   font-family: 'wr_bold_italic';
   src: url('/css/fonts/wr-bolditalic-webfont.woff2') format('woff2'),
-    url('/css/fonts/wr-bolditalic-webfont.woff') format('woff');
+    url(' /fonts/wr-bolditalic-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -104,8 +104,7 @@ h5,
 h6 {
   font-family: 'wr_bold', sans-serif;
   font-weight: 400;
-
+}
 quick-actions nav {
   bottom:0;
-
 }
