@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="apple-touch-icon" sizes="180x180" href="/css/graphics/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/css/graphics/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/css/graphics/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+    <title>Record Media - Where's Religion</title>
+
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="js/materialize.js"></script>
+    <script src="js/init.js" defer></script>
+    <script src="js/media.js" defer></script>
+    <script>
+        $(document).ready(function () {
+          $('quick-actions')[0].addAction('Entry','snippet_folder','/entry.html')
+          $('quick-actions')[0].addAction('Fieldnotes','edit_note','/fieldnotes.html')
+        })
+    </script>
+    <style>
+        img.preview{
+            max-width: 30em;
+            max-height: 20em;
+        }
+        audio.preview{
+            max-width: 30em;
+            max-height: 20em;
+        }
+        video.preview{
+            max-width: 30em;
+            max-height: 20em;
+        }
+        .action{
+            margin:  0px 2em;
+        }
+    </style>
+</head>
+
+<body>
+    <site-nav></site-nav>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col" style="width: 100%;">
+                    <h5 class="center">Upload Media of Your Surroundings</h5>
+                    <div onclick="mediaCapture('camera', event)" class="center card dropdown-trigger">
+                        <span title="Open your camera to take a picture or record a video" class="light">Tap Here to Use Camera</span><br>
+                        <i title="Tap here to open your camera to take a picture or record a video" class="material-icons large light-blue-text">camera_enhance</i>
+                        <input id="cam_media" hidden type="file" name="file" accept="image/*,video/*" capture="environment" onchange="fileSelected(event)" />
+                    </div><br><br>
+                    <div onclick="mediaCapture('recorder', event)" class="center card dropdown-trigger">
+                        <span title="Open your sound recorder to capture audio" class="light">Tap Here to Use Recorder</span><br>
+                        <i title="Tap here to Open your sound recorder to capture audio" class="material-icons large light-blue-text">settings_voice</i>
+                        <input id="mic_media" hidden type="file" name="file" accept="audio/*" capture="environment" onchange="fileSelected(event)" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="mediaPreview" class="col" style="width: 100%;">
+                    <h5 class="center">Media Preview</h5>
+                    <div class="center fileName"></div>
+                    <div class="center fileSize"></div>
+                    <div class="center fileType"></div>
+                    <div class="center" id="preview">
+                        
+                    </div>
+                    <div class="center" style="margin-top: 2em;">
+                        <div class="center mediastatus"></div>
+                        <div onclick="uploadFile()" class="action dropdown-trigger" style="display: inline-block;">
+                            <span title="Upload this media to Lived Religion in the Digital Age" class="light">Upload</span><br>
+                            <i title="Tap here to upload this media to Lived Religion in the Digital Age" class="material-icons medium light-blue-text">cloud_upload</i>
+                        </div>
+                        <div onclick="mediaRecapture()" class="action dropdown-trigger" style="display: inline-block;">
+                            <span title="Re-capture this media" class="light">Recapture</span><br>
+                            <i title="Tap here to remove this media and attempt to recapture" class="material-icons medium light-blue-text">party_mode</i>
+                        </div>
+                        <div onclick="uploadCancelled()" class="action dropdown-trigger" style="display: inline-block;">
+                            <span title="Forget this media, it is no good." class="light">Reset</span><br>
+                            <i title="Tap here to start over" class="material-icons medium light-blue-text">no_photography</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <site-footer></site-footer>
+</body>
+
+</html>
