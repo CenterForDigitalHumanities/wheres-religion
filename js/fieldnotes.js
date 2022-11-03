@@ -3,6 +3,9 @@
  * Add the HTML <li> element for this note, and add it to cache. 
  */  
 function submitNote(){
+	if(!notes || !notes.value){
+		return
+	}
 	let noteObject = {
 		"id" : "note_"+Date.now(),
 		"type" : "MobileNote",
@@ -19,9 +22,10 @@ function submitNote(){
     `
 		<li id=${noteObject.id} class="collection-item">
 		    ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
-		    <i title="Tap here to remove this note." onclick="removeNote('${noteObject.id}')" class="material-icons small dropdown-trigger red-text secondary-content">remove_circle</i>
+		    <i title="Tap here to remove this note." onclick="removeNote('${noteObject.id}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
 		</li>
     `
+    notes.value = ""
 }
 
 /**
