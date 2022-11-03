@@ -43,18 +43,21 @@
             height:  14em;
             padding:  1em;
         }
+        .fixed-action-btn{
+            bottom: 65px;
+        }
     </style>
 </head>
 
 <body>
     <site-nav></site-nav>
-    <div class="fixed-action-btn">
-      <a class="btn-floating btn-large light-blue">
+    <div class="fixed-action-btn hide-on-large-only hide-on-extra-large-only">
+      <a class="btn-floating btn-large light-blue dropdown-trigger">
         <i class="large material-icons">data_saver_on</i>
       </a>
       <ul>
-        <li onclick="submitNote()"><a class="btn-floating green"><i title="Tap here to keep this note-to-self" class="material-icons medium light-blue-text">data_saver_on</i></a></li>
-        <li onclick="cancelNote()"><a class="btn-floating red"><i class="material-icons">backspace</i></a></li>
+        <li onclick="submitNote()"><a class="btn-floating green"><i title="Tap here to keep this note-to-self" class="material-icons medium">data_saver_on</i></a></li>
+        <li onclick="cancelNote()"><a class="btn-floating red"><i class="material-icons medium">backspace</i></a></li>
       </ul>
     </div>
     <div class="section">
@@ -66,7 +69,7 @@
                     <textarea id="notes"></textarea>
                 </div>
             </div>
-            <div class="row">
+            <div class="row hide-on-med-and-down">
                 <div class="col center" style="width: 100%;">
                     <div class="center notestatus"></div>
                     <div onclick="submitNote(event)" class="action dropdown-trigger" style="display: inline-block;">
