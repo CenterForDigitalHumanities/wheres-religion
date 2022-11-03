@@ -27,6 +27,11 @@
           $('quick-actions')[0].addAction('Help','help','/help.html')
           $('quick-actions')[0].addAction('Contact','contact_page','/contact.html')
           sessionStorage.setItem("mobile_notes", "[]")
+          var fab = document.querySelectorAll('.fixed-action-btn')
+          var instances = M.FloatingActionButton.init(fab, {
+            hoverEnabled: false,
+            direction: 'left'
+          })
         })
     </script>
     <style>
@@ -43,6 +48,15 @@
 
 <body>
     <site-nav></site-nav>
+    <div class="fixed-action-btn">
+      <a class="btn-floating btn-large light-blue">
+        <i class="large material-icons">data_saver_on</i>
+      </a>
+      <ul>
+        <li onclick="submitNote()"><a class="btn-floating green"><i title="Tap here to keep this note-to-self" class="material-icons medium light-blue-text">data_saver_on</i></a></li>
+        <li onclick="cancelNote()"><a class="btn-floating red"><i class="material-icons">backspace</i></a></li>
+      </ul>
+    </div>
     <div class="section">
         <div class="container">
             <div class="row">
