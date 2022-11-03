@@ -7,32 +7,32 @@ const S3_PROXY_PREFIX = "http://s3-proxy.rerum.io/S3/"
  */
 function fileSelected(event) {
     let file = event.target.files[0]
-    if(!file) { return }
-      let fileSize = (file.size > 1024 * 1024) 
+    if (!file) { return }
+    let fileSize = (file.size > 1024 * 1024)
         ? (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB'
         : (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB'
 
-      mediaPreview.querySelector('.fileName').innerHTML = `Name: ${file.name}`
-      mediaPreview.querySelector('.fileSize').innerHTML = `Size: ${fileSize}`
-      mediaPreview.querySelector('.fileType').innerHTML = `Type: ${file.type}`
+    mediaPreview.querySelector('.fileName').innerHTML = `Name: ${file.name}`
+    mediaPreview.querySelector('.fileSize').innerHTML = `Size: ${fileSize}`
+    mediaPreview.querySelector('.fileType').innerHTML = `Type: ${file.type}`
 
-      let elementType
-      switch(file.type.split("/")[0]) {
+    let elementType
+    switch (file.type.split("/")[0]) {
         case "image": elementType = "img"
-        break
+            break
         case "video": elementType = "video"
-        break
+            break
         case "audio": elementType = "audio"
-        break
+            break
         default: elementType = "object"
-      }
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        preview.innerHTML = elementType==="img"
-        ? `<img class="preview" src="${e.target.result}" alt="Captured Image" />`
-        : `<${elementType} class="preview" controls><source src="${e.target.result}" type="${file.type}" </source></${elementType}>`
-      }
-      reader.readAsDataURL(file)
+    }
+    const reader = new FileReader()
+    reader.onload = (e) => {
+        preview.innerHTML = elementType === "img"
+            ? `<img class="preview" src="${e.target.result}" alt="Captured Image" />`
+            : `<${elementType} class="preview" controls><source src="${e.target.result}" type="${file.type}" </source></${elementType}>`
+    }
+    reader.readAsDataURL(file)
 }
 /**
  * One of the big div wrapped icons with text was clicked
