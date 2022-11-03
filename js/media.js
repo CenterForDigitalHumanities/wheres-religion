@@ -101,7 +101,6 @@ function uploadFile(){
  */
 function uploadComplete(uri){
     mediaPreview.querySelector('.mediastatus').innerHTML = "Upload Complete!"
-    //mediaPreview.querySelector(".preview").setAttribute("src", uri)
 }
 
 /**
@@ -114,14 +113,14 @@ function uploadFailed(message="Upload Failed."){
 /**
  * The file upload was cancelled.  RESET.
  */
-function uploadCancelled(message="Upload Cancelled ;(") {
-    mediaPreview.querySelector('.fileName').innerHTML = ""
-    mediaPreview.querySelector('.fileSize').innerHTML = ""
-    mediaPreview.querySelector('.fileType').innerHTML = ""
+function uploadCancelled(message="Upload Cancelled ☹") {
+    mediaPreview.querySelector('.fileName').replaceChildren()
+    mediaPreview.querySelector('.fileSize').replaceChildren()
+    mediaPreview.querySelector('.fileType').replaceChildren()
     mediaPreview.querySelector('.mediastatus').innerHTML = message
     setTimeout(() => {
-        mediaPreview.querySelector('.mediastatus').innerHTML=""
+        mediaPreview.querySelector('.mediastatus').replaceChildren()
     }, 3000)
     document.querySelector("input.selected")?.classList.remove("selected")
-    preview.innerHTML = ""
+    preview.replaceChildren()
 }
