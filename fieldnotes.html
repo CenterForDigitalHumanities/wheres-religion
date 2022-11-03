@@ -29,8 +29,7 @@
           sessionStorage.setItem("mobile_notes", "[]")
           var fab = document.querySelectorAll('.fixed-action-btn')
           var instances = M.FloatingActionButton.init(fab, {
-            hoverEnabled: false,
-            direction: 'left'
+            hoverEnabled: false
           })
         })
     </script>
@@ -43,22 +42,27 @@
             height:  14em;
             padding:  1em;
         }
-        .fixed-action-btn{
+        .ab1{
             bottom: 65px;
+        }
+        .ab2{
+            bottom: 65px;
+            right:  110px;
         }
     </style>
 </head>
 
 <body>
     <site-nav></site-nav>
-    <div class="fixed-action-btn hide-on-large-only hide-on-extra-large-only">
+    <div onclick="submitNote(event)" class="ab1 fixed-action-btn hide-on-large-only hide-on-extra-large-only">
       <a class="btn-floating btn-large light-blue dropdown-trigger">
         <i class="large material-icons">data_saver_on</i>
       </a>
-      <ul>
-        <li onclick="submitNote()"><a class="btn-floating green"><i title="Tap here to keep this note-to-self" class="material-icons medium">data_saver_on</i></a></li>
-        <li onclick="cancelNote()"><a class="btn-floating red"><i class="material-icons medium">backspace</i></a></li>
-      </ul>
+    </div>
+    <div onclick="cancelNote(event)" class="ab2 fixed-action-btn hide-on-large-only hide-on-extra-large-only">
+      <a class="btn-floating btn-large red dropdown-trigger">
+        <i class="large material-icons">backspace</i>
+      </a>
     </div>
     <div class="section">
         <div class="container">
