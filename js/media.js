@@ -8,7 +8,7 @@ const S3_PROXY_PREFIX = "http://s3-proxy.rerum.io/S3/"
 function fileSelected(event) {
     let file = event.target.files[0]
     if (file) {
-      var fileSize = 0;
+      let fileSize = 0;
       if (file.size > 1024 * 1024)
         fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB'
       else
@@ -17,31 +17,21 @@ function fileSelected(event) {
       mediaPreview.querySelector('.fileName').innerHTML = 'Name: ' + file.name
       mediaPreview.querySelector('.fileSize').innerHTML = 'Size: ' + fileSize
       mediaPreview.querySelector('.fileType').innerHTML = 'Type: ' + file.type
-      let itIsAnImage = file.type.includes("image")
-      let itIsAVideo = file.type.includes("video")
-      let itIsAudio = file.type.includes("audio")
+      let elementType
+      switch(file.type.split("/")[0]) {
+        case "image": elementType = "img"
+        break
+        case "video": elementType = "video"
+        break
+        case "audio": elementType = "audio"
+        break
+        default: elementType = "object"
+      }
       const reader = new FileReader()
-
-      if(itIsAnImage){
-        let imgPreview
-        reader.onload = (e) => {
-            imgPreview = `<img class="preview" src="${e.target.result}" alt="Captured Image" />`
-            preview.innerHTML = imgPreview
-        }
-      }
-      else if(itIsAVideo){
-        let videoPreview
-        reader.onload = (e) => {
-            videoPreview = `<video class="preview" controls><source src="${e.target.result}" type="${file.type}" </source></video>`
-            preview.innerHTML = videoPreview
-        }
-      }
-      else if(itIsAudio){
-        let audioPreview
-        reader.onload = (e) => {
-            audioPreview = `<audio class="preview" controls><source src="${e.target.result}" type="${file.type}" </source></audio>`
-            preview.innerHTML = audioPreview
-        }
+      reader.onload = (e) => {
+        preview.innerHTML = elementType==="img"
+        ? `<img class="preview" src="${e.target.result}" alt="Captured Image" />`
+        : `<${elementType} class="preview" controls><source src="${e.target.result}" type="${file.type}" </source></${elementType}>`
       }
       reader.readAsDataURL(file)
     }
