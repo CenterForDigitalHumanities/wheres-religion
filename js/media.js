@@ -63,9 +63,9 @@ function mediaCapture(which, event) {
  * The user would like to re-capture the same media type as the thing already captured.
  * This needs to reset the media preview, and open the camera or mic for recapture.
 */
-function mediaRecapture(){
+function mediaRecapture() {
     const chosen = document.querySelector("input.selected")
-    if(!chosen) { return }
+    if (!chosen) { return }
     uploadCancelled("Recapture media chosen")
     chosen.click()
 }
@@ -73,25 +73,25 @@ function mediaRecapture(){
 /**
  * The upload button was clicked.  Upload the file from the selected input.
  */
-function uploadFile(){
+function uploadFile() {
     mediaPreview.querySelector('.mediastatus').innerHTML = "Uploading, please wait..."
     const file = document.querySelector("input.selected").files[0]
     let data = new FormData()
     data.append('file', file)
-    fetch(S3_PROXY_PREFIX+"uploadFile", {
+    fetch(S3_PROXY_PREFIX + "uploadFile", {
         method: "POST",
         mode: "cors",
         body: data
     })
-    .then(resp => {
-        console.log("Got the response from the upload file servlet");
-        if(resp.ok) { return uploadComplete(resp.headers.get("Location"))}
-        resp.text().then(text => uploadFailed(text))
-    })
-    .catch(err => {
-        console.error(err)
-        uploadFailed(err)
-    })
+        .then(resp => {
+            console.log("Got the response from the upload file servlet");
+            if (resp.ok) { return uploadComplete(resp.headers.get("Location")) }
+            resp.text().then(text => uploadFailed(text))
+        })
+        .catch(err => {
+            console.error(err)
+            uploadFailed(err)
+        })
 }
 
 
@@ -99,21 +99,21 @@ function uploadFile(){
  * The file upload was successful.
  * @param {string} uri - The URI of the uploaded item
  */
-function uploadComplete(uri){
+function uploadComplete(uri) {
     mediaPreview.querySelector('.mediastatus').innerHTML = "Upload Complete!"
 }
 
 /**
  * The file upload failed.  Tell the user
  */
-function uploadFailed(message="Upload Failed."){
+function uploadFailed(message = "Upload Failed.") {
     mediaPreview.querySelector('.mediastatus').innerHTML = message
 }
 
 /**
  * The file upload was cancelled.  RESET.
  */
-function uploadCancelled(message="Upload Cancelled ☹") {
+function uploadCancelled(message = "Upload Cancelled ☹") {
     mediaPreview.querySelector('.fileName').replaceChildren()
     mediaPreview.querySelector('.fileSize').replaceChildren()
     mediaPreview.querySelector('.fileType').replaceChildren()
