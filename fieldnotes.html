@@ -22,7 +22,10 @@
     <script>
         $(document).ready(function () {
           $('quick-actions')[0].addAction('Entry','snippet_folder','/entry.html')
-          $('quick-actions')[0].addAction('Fieldnotes','edit_note','/fieldnotes.html')
+          $('quick-actions')[0].addAction('Capture Media','add_a_photo','/media.html')
+          $('quick-actions')[0].addAction('Map','pin_drop','/map.html')
+          $('quick-actions')[0].addAction('Help','help','/help.html')
+          $('quick-actions')[0].addAction('Contact','contact_page','/contact.html')
           sessionStorage.setItem("mobile_notes", "[]")
         })
     </script>
@@ -45,7 +48,7 @@
             <div class="row">
                 <div class="col center" style="width: 100%;">
                     <h4>Field Notes</h4>
-                    <small>Later, you will be able to review and decide which to keep as part of the Experience</small>
+                    <small>Later you will be able to review and decide which to keep as part of the Experience</small>
                     <textarea id="notes"></textarea>
                 </div>
             </div>
@@ -62,9 +65,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row center">
+            <div class="row">
                 <ul id="addedNotes" class="collection with-header">
-                    <li class="collection-header"><h6>Submitted Notes</h6></li>
+                    <li class="collection-header center"><h6>Submitted Notes</h6></li>
                 </ul>                   
             </div>
         </div>
