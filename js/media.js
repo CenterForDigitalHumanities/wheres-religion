@@ -7,16 +7,15 @@ const S3_PROXY_PREFIX = "http://s3-proxy.rerum.io/S3/"
  */
 function fileSelected(event) {
     let file = event.target.files[0]
-    if (file) {
-      let fileSize = 0;
-      if (file.size > 1024 * 1024)
-        fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB'
-      else
-        fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB'
+    if(!file) { return }
+      let fileSize = (file.size > 1024 * 1024) 
+        ? (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB'
+        : (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB'
 
-      mediaPreview.querySelector('.fileName').innerHTML = 'Name: ' + file.name
-      mediaPreview.querySelector('.fileSize').innerHTML = 'Size: ' + fileSize
-      mediaPreview.querySelector('.fileType').innerHTML = 'Type: ' + file.type
+      mediaPreview.querySelector('.fileName').innerHTML = `Name: ${file.name}`
+      mediaPreview.querySelector('.fileSize').innerHTML = `Size: ${fileSize}`
+      mediaPreview.querySelector('.fileType').innerHTML = `Type: ${file.type}`
+
       let elementType
       switch(file.type.split("/")[0]) {
         case "image": elementType = "img"
@@ -34,7 +33,6 @@ function fileSelected(event) {
         : `<${elementType} class="preview" controls><source src="${e.target.result}" type="${file.type}" </source></${elementType}>`
       }
       reader.readAsDataURL(file)
-    }
 }
 /**
  * One of the big div wrapped icons with text was clicked
