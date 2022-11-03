@@ -45,16 +45,14 @@ function mediaCapture(which, event){
     if(event.target.tagName==="INPUT"){
         return
     }
+    event.preventDefault()
+    event.stopPropagation()
     if(which === "camera"){
-        event.preventDefault()
-        event.stopPropagation()
         mic_media.classList.remove("selected")
         cam_media.classList.add("selected")
         cam_media.click()
     }
     else{
-        event.preventDefault()
-        event.stopPropagation()
         cam_media.classList.remove("selected")
         mic_media.classList.add("selected")
         mic_media.click()
