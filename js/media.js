@@ -6,7 +6,7 @@ const S3_PROXY_PREFIX = "http://s3-proxy.rerum.io/S3/"
  * @param {ChangeEvent} event
  */
 function fileSelected(event) {
-    let file = event.target.files[0]
+    const file = event.target.files[0]
     if (!file) { return }
     let fileSize = (file.size > 1024 * 1024)
         ? (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB'
@@ -64,10 +64,10 @@ function mediaCapture(which, event) {
  * This needs to reset the media preview, and open the camera or mic for recapture.
 */
 function mediaRecapture(){
-    let chosen = document.querySelector("input.selected")
+    const chosen = document.querySelector("input.selected")
+    if(!chosen) { return }
     uploadCancelled("Recapture media chosen")
     chosen.click()
-    return
 }
 
 /**
@@ -75,8 +75,8 @@ function mediaRecapture(){
  */
 function uploadFile(){
     mediaPreview.querySelector('.mediastatus').innerHTML = "Uploading, please wait..."
-    let file = document.querySelector("input.selected").files[0]
-    var data = new FormData()
+    const file = document.querySelector("input.selected").files[0]
+    let data = new FormData()
     data.append('file', file)
     fetch(S3_PROXY_PREFIX+"uploadFile", {
         method: "POST",
@@ -85,8 +85,8 @@ function uploadFile(){
     })
     .then(resp => {
         console.log("Got the response from the upload file servlet");
-        if(resp.ok) uploadComplete(resp.headers.get("Location"))
-        else resp.text().then(text => uploadFailed(text))
+        if(resp.ok) { return uploadComplete(resp.headers.get("Location"))}
+        resp.text().then(text => uploadFailed(text))
     })
     .catch(err => {
         console.error(err)
