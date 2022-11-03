@@ -54,12 +54,12 @@
 
 <body>
     <site-nav></site-nav>
-    <div onclick="submitNote(event)" class="ab1 fixed-action-btn hide-on-large-only hide-on-extra-large-only">
+    <div onclick="submitNote(event)" class="ab1 fixed-action-btn hide-on-med-and-up">
       <a class="btn-floating btn-large light-blue dropdown-trigger">
         <i class="large material-icons">data_saver_on</i>
       </a>
     </div>
-    <div onclick="cancelNote(event)" class="ab2 fixed-action-btn hide-on-large-only hide-on-extra-large-only">
+    <div onclick="cancelNote(event)" class="ab2 fixed-action-btn hide-on-med-and-up">
       <a class="btn-floating btn-large red dropdown-trigger">
         <i class="large material-icons">backspace</i>
       </a>
@@ -73,7 +73,7 @@
                     <textarea id="notes"></textarea>
                 </div>
             </div>
-            <div class="row hide-on-med-and-down">
+            <div class="row hide-on-small-only">
                 <div class="col center" style="width: 100%;">
                     <div class="center notestatus"></div>
                     <div onclick="submitNote(event)" class="action dropdown-trigger" style="display: inline-block;">
