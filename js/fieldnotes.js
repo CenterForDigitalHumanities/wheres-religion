@@ -1,5 +1,3 @@
-
-
 function submitNote(event){
 	let noteObject = {
 		"id" : "note_"+Date.now(),
@@ -9,14 +7,14 @@ function submitNote(event){
 	let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
 	allNotes.push(noteObject)
 	sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
-	let notehtml = 
-	`<div class="addedNote" id="${noteObject.id}">
-		<div class="noteSnippet" style="display: inline-block;"> ${notes.value.substring(0, 50)}... </div>
-		<div onclick="removeNote('${noteObject.id}')" class="dropdown-trigger" style="display: inline-block;">
-            <i title="Tap here to remove this note-to-self" class="material-icons small light-blue-text">cloud_upload</i>
+    let noteitemhtml =
+    `<li id=${noteObject.id} class="collection-item">
+        <div>
+            ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
+            <i title="Tap here to remove this note." onclick="removeNote('${noteObject.id}')" class="material-icons small dropdown-trigger red-text">remove_circle</i>
         </div>
-	</div>`
-	addedNotes.innerHTML += notehtml
+    </li>`
+	addedNotes.innerHTML += noteitemhtml
 }
 
 function cancelNote(event){
