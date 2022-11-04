@@ -15,7 +15,7 @@ function submitNote() {
      * async and save this "Note Notification" to the queue
      * then...
      */
-    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ? ? []
+    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
     allNotes.push(noteObject)
     sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
     addedNotes.innerHTML +=
