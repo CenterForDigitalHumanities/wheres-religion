@@ -18,12 +18,65 @@
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js" defer></script>
+  <script>
+    $(document).ready(function () {
+      $('quick-actions')[0].addAction('Capture Media','add_a_photo','/media.html')
+      $('quick-actions')[0].addAction('&plus;Location','pin_drop','/location.html')
+      $('quick-actions')[0].addAction('&plus;Experience','today','/experience.html')
+    })
+  </script>
+
 </head>
 
 <body>
   <site-nav></site-nav>
   <div class="section">
     <div class="container">
+      <ul class="collection with-header">
+        <li class="collection-header"><h4>Experiences</h4></li>
+        <li class="collection-item"><div>St. Louis 10/02/2022<a href="#!" class="secondary-content"><i class="material-icons">edit_note</i></a></div></li>
+        <li class="collection-item"><div>Greek Festival<a href="#!" class="secondary-content"><i class="material-icons">edit_note</i></a></div></li>
+        <li class="collection-item"><div>Voter Registration<a href="#!" class="secondary-content"><i class="material-icons">edit_note</i></a></div></li>
+        <li class="collection-item"><div>St. Louis 02/02/2022<a href="#!" class="secondary-content"><i class="material-icons">edit_note</i></a></div></li>
+      </ul>
+
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">add_a_photo</i></h2>
+            <h5 class="center">Capture Media</h5>
+
+            <p class="light">
+              Quickly add a photo, video, or audio recording to the current experience.
+            </p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">pin_drop</i></h2>
+            <h5 class="center">Add a Location</h5>
+
+            <p class="light">
+              Describe a new location for use in this experience or as a standalone.
+            </p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">today</i></h2>
+            <h5 class="center">Start an Experience</h5>
+
+            <p class="light">
+              This app is designed to record field experiences quickly and easily. This option 
+              will start a new Experience without requiring a media recording.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
       <img src="https://user-images.githubusercontent.com/1119165/198061221-2d7e989b-e5c2-4961-888a-6a694561644f.png"
         width="400">
     </div>

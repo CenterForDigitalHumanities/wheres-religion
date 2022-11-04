@@ -10,7 +10,7 @@
 @font-face {
   font-family: 'wr_bold_italic';
   src: url('/css/fonts/wr-bolditalic-webfont.woff2') format('woff2'),
-    url('/css/fonts/wr-bolditalic-webfont.woff') format('woff');
+    url(' /fonts/wr-bolditalic-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -85,6 +85,15 @@
 
 .icon-block .material-icons {
   font-size: inherit;
+}
+
+quick-actions i.material-icons+span {
+  margin-top: -32px;
+  display: block;
+}
+
+quick-actions a i.material-icons {
+  margin-top: -12px;
 }
 
 h1,
