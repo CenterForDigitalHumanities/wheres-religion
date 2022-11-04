@@ -45,7 +45,7 @@ function removeNote(noteID) {
      * async and clear this "Note Notification" from the queue
      * then...
      */
-    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ? ? []
+    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
     allNotes = allNotes.filter(obj => obj.id !== noteID)
     document.getElementById(noteID).remove()
     sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
