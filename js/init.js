@@ -153,6 +153,7 @@ class LrLogin extends HTMLElement {
                 top: 0;
                 left: 0;
                 z-index: 9000;
+                height: 93vh;
                 background-color: rgba(7,42,12,1);
             }
             fieldset {
