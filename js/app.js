@@ -1,3 +1,8 @@
+/**
+ * 
+ * 
+ */
+
 async function login(loginWidget, data, submitEvent){
     let authenticatedUser = await fetch('http://lived-religion.rerum.io/deer-lr/login', {
         method: "POST",
