@@ -94,7 +94,7 @@ customElements.define('site-footer', SiteFooter)
 class quickActions extends HTMLElement {
   constructor() {
     super()
-    addEventListener('lrUserKnown', event => {
+    addEventListener('wrUserKnown', event => {
         let user = event.detail.user
         if(user !== null){
             if(user.roles.administrator){
@@ -129,18 +129,18 @@ customElements.define('quick-actions', quickActions)
 class LrLogin extends HTMLElement {
     constructor() {
         super()
-        let user = localStorage.getItem("lr-user")
+        let user = localStorage.getItem("wr-user")
         if (user !== null) {
             try {
                 user = JSON.parse(user)
-                this.setAttribute("lr-user", user["@id"])
-                dispatchEvent(new CustomEvent('lrUserKnown', { detail: { user: user }, composed: true, bubbles: true }))
+                this.setAttribute("wr-user", user["@id"])
+                dispatchEvent(new CustomEvent('wrUserKnown', { detail: { user: user }, composed: true, bubbles: true }))
             } catch (err) {
-                console.log("User identity reset; unable to parse ", localStorage.getItem("lr-user"))
+                console.log("User identity reset; unable to parse ", localStorage.getItem("wr-user"))
                 document.location.href="logout.html"
             }
         }
-        if (this.hasAttribute("lr-user")) {
+        if (this.hasAttribute("wr-user")) {
             //<a>${user.name}</a>
             this.innerHTML = `<div class="tabs">
                 <a title="${user.name}" href="logout.html">Logout</a>

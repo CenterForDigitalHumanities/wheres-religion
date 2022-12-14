@@ -121,13 +121,15 @@
             </div>
         </div>
     </div>
-<!--     <div class="section">
-        <div class="container">
-            <p>Original Prototype</p>
-            <img src="https://user-images.githubusercontent.com/1119165/198061377-b5f36f94-ceb5-41e1-92b8-e5b06c3ddaf2.png" width="400">
-        </div>
-    </div> -->
     <site-footer></site-footer>
 </body>
+<script>
+    /**
+    * Catch user detection and trigger draw() for interfaces.
+    */
+    addEventListener('wrUserKnown', event => {
+        getNotesInQueue()
+    }, false) 
 
+</script>
 </html>

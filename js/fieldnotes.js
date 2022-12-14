@@ -1,31 +1,48 @@
+
 /**
  * Query for all the notes in the user's notes queue and paginate them.
  */
 async function getNotesInQueue() {
+    let user = JSON.parse(localStorage.getItem("wr-user"))
+    if (!user || !user["@id"]) {
+        //alert("You must be logged in to submit a note")
+        localStorage.removeItem("wr-user")
+        localStorage.removeItem("mobile_notes")
+        return
+    }
+    const historyWildcard = {"$exists":true, "$size":0}
     let queryObj = {
-        "get": "My Notes",
+        "type": "MobileNote",
+        "target": user,
+        "__rerum.history.next": historyWildcard
     }
     /**
      * async and save this "Note Notification" to the queue
      * then...
      */
-    let allNotes = await fetch('http://lived-religion.rerum.io/deer-lr/logout', {
+    let allNotes = await fetch('http://lived-religion-dev.rerum.io/deer-lr/query', {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
         headers: {
-            'Content-Type': 'text/plain'
+            'Content-Type': 'application/json;charset=utf-8'
         }
     })
-    allNotes.push(noteObject)
-    sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
-    addedNotes.innerHTML +=
+    .then(resp => resp.json())
+    .catch(err => {return []})
+    if(allNotes){
+        sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
+        addedNotes.innerHTML +=
         `
-        <li id=${noteObject.id} class="collection-item">
-            ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
-            <i title="Tap here to remove this note." onclick="removeNote('${noteObject.id}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
-        </li>
-    `
+            <li id=${noteObject["@id"]} class="collection-item">
+                ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
+                <i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+            </li>
+        `    
+    }
+    else{
+        sessionStorage.setItem("mobile_notes", "[]")
+    }
 }
 
 /**
@@ -36,26 +53,58 @@ async function submitNote() {
     if (!notes || !notes.value) {
         return
     }
+    let user = JSON.parse(localStorage.getItem("wr-user"))
+    if (!user || !user["@id"]) {
+        alert("You must be logged in to submit a note")
+        localStorage.removeItem("wr-user")
+        localStorage.removeItem("mobile_notes")
+        return
+    }
+    // My bucket is all notes targeted at me.  Presumably, these are all the notes I have added.
+    // They are Experience agnostic?  Can I send a note to myself and assign it to any experience?
+    // Since it targets me, maybe 'creator' would be better?
+    // What type should this be?
+    // Should it have a label/will we let users provide a label?
+    // Note the time it was created will already be noted in __rerum.createdAt
     let noteObject = {
-        "id": "note_" + Date.now(),
         "type": "MobileNote",
-        "value": notes.value
+        "value": notes.value,
+        "target":user["@id"]
     }
     /**
-     * async and save this "Note Notification" to the queue
-     * then...
+     * Note we are trying to use the Lived Religion Web App API.  
+     * That API needs to be CORS friendly to this companion app.
+     * TODO: Make the Lived Religion web app API check if the user is logged in before doing server stuff?
      */
-    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-    allNotes.push(noteObject)
-    sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
-    addedNotes.innerHTML +=
+    const newNote = await fetch("http://lived-religion-dev.rerum.io/deer-lr/create", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(noteObject)
+    })
+    .then(response => response.json())
+    .then(data => data["new_obj_state"])
+    .catch(err => {return err})
+
+    if(newNote && newNote["@id"]){
+        let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+        allNotes.push(noteObject)
+        sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
+        addedNotes.innerHTML +=
+            `
+            <li id=${noteObject["@id"]} class="collection-item">
+                ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
+                <i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+            </li>
         `
-		<li id=${noteObject.id} class="collection-item">
-		    ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
-		    <i title="Tap here to remove this note." onclick="removeNote('${noteObject.id}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
-		</li>
-    `
-    notes.value = ""
+        notes.value = ""      
+    }
+    else{
+        console.error("Could not save note.  See log below")
+        console.log(newNote)
+    }
 }
 
 /**
@@ -75,7 +124,7 @@ async function removeNote(noteID) {
      * Is this only something you can do from the desktop site?? Not sure if we will offer this. 
      */
     let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-    allNotes = allNotes.filter(obj => obj.id !== noteID)
+    allNotes = allNotes.filter(obj => obj["@id"] !== noteID)
     document.getElementById(noteID).remove()
     sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
 }
