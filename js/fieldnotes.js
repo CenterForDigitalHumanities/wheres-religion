@@ -13,32 +13,33 @@ async function getNotesInQueue() {
     const historyWildcard = {"$exists":true, "$size":0}
     let queryObj = {
         "type": "MobileNote",
-        "target": user,
+        "target": user["@id"],
         "__rerum.history.next": historyWildcard
     }
-    /**
-     * async and save this "Note Notification" to the queue
-     * then...
-     */
-    let allNotes = await fetch('http://lived-religion-dev.rerum.io/deer-lr/query', {
+    let allNotes = await fetch('http://tinydev.rerum.io/app/query', {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
-        }
+        },
+        body: JSON.stringify(queryObj)
     })
     .then(resp => resp.json())
     .catch(err => {return []})
     if(allNotes){
+        let notesString = ""
+        allNotes.forEach(noteObject => {
+            notesString +=
+            `
+                <li id=${noteObject["@id"]} class="collection-item">
+                    ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
+                    <i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+                </li>
+            `    
+        })
         sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
-        addedNotes.innerHTML +=
-        `
-            <li id=${noteObject["@id"]} class="collection-item">
-                ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
-                <i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
-            </li>
-        `    
+        addedNotes.innerHTML = notesString   
     }
     else{
         sessionStorage.setItem("mobile_notes", "[]")
@@ -76,7 +77,7 @@ async function submitNote() {
      * That API needs to be CORS friendly to this companion app.
      * TODO: Make the Lived Religion web app API check if the user is logged in before doing server stuff?
      */
-    const newNote = await fetch("http://lived-religion-dev.rerum.io/deer-lr/create", {
+    const newNote = await fetch("http://tinydev.rerum.io/app/create", {
         method: "POST",
         mode: "cors",
         headers: {
@@ -90,13 +91,13 @@ async function submitNote() {
 
     if(newNote && newNote["@id"]){
         let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-        allNotes.push(noteObject)
+        allNotes.push(newNote)
         sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
         addedNotes.innerHTML +=
             `
-            <li id=${noteObject["@id"]} class="collection-item">
+            <li id=${newNote["@id"]} class="collection-item">
                 ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
-                <i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+                <i title="Tap here to remove this note." onclick="removeNote('${newNote["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
             </li>
         `
         notes.value = ""      
