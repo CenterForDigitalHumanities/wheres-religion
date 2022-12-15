@@ -4,7 +4,7 @@
  */
 
 async function login(loginWidget, data, submitEvent){
-    let authenticatedUser = await fetch('http://lived-religion-dev.rerum.io/deer-lr/login', {
+    let authenticatedUser = await fetch('http://lived-religion.rerum.io/deer-lr/login', {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -46,7 +46,7 @@ async function login(loginWidget, data, submitEvent){
  * Broadcast the logout across tabs. 
  */
 async function logout(){
-    fetch('http://lived-religion-dev.rerum.io/deer-lr/logout', {
+    fetch('http://lived-religion.rerum.io/deer-lr/logout', {
         method: "POST",
         mode: "cors",
         cache: "no-cache",

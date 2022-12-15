@@ -18,7 +18,7 @@ async function getNotesInQueue() {
         "target": user["@id"],
         "__rerum.history.next": historyWildcard
     }
-    let allNotes = await fetch('http://lived-religion-dev.rerum.io/deer-lr/query', {
+    let allNotes = await fetch('http://lived-religion.rerum.io/deer-lr/query', {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -81,7 +81,7 @@ async function submitNote(event) {
      * That API needs to be CORS friendly to this companion app.
      * TODO: Make the Lived Religion web app API check if the user is logged in before doing server stuff?
      */
-    const newNote = await fetch("http://lived-religion-dev.rerum.io/deer-lr/create", {
+    const newNote = await fetch("http://lived-religion.rerum.io/deer-lr/create", {
         method: "POST",
         mode: "cors",
         headers: {
