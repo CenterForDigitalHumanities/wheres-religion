@@ -52,7 +52,9 @@ async function getNotesInQueue() {
  * Add the "Note Notification" to the queue.
  * Add the HTML <li> element for this note, and add it to cache. 
  */
-async function submitNote() {
+async function submitNote(event) {
+    event.stopPropagation()
+    event.preventDefault()
     if (!notes || !notes.value) {
         return
     }
@@ -96,12 +98,12 @@ async function submitNote() {
         allNotes.push(newNote)
         sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
         addedNotes.innerHTML +=
-            `
+        `
             <li id=${newNote["@id"]} class="collection-item">
                 ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
-                <i title="Tap here to remove this note." onclick="removeNote('${newNote["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
             </li>
         `
+        //<i title="Tap here to remove this note." onclick="removeNote('${newNote["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
         notes.value = ""      
     }
     else{
@@ -113,7 +115,9 @@ async function submitNote() {
 /**
  * Just the best, I'm keeping it.
  */
-function cancelNote() {
+function cancelNote(event) {
+    event.stopPropagation()
+    event.preventDefault()
     notes.value = ""
 }
 
