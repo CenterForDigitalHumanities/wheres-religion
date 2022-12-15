@@ -1,4 +1,6 @@
-
+//Note that this will use lived-religion-dev.rerum.io/create which DOES NOT route through tinydev
+//This is using Dev's LRDA App API, which has an access token with this agent encoded in it.
+const APPAGENT="http://store.rerum.io/v1/id/630e79471267884358921da7"
 /**
  * Query for all the notes in the user's notes queue and paginate them.
  */
@@ -16,7 +18,7 @@ async function getNotesInQueue() {
         "target": user["@id"],
         "__rerum.history.next": historyWildcard
     }
-    let allNotes = await fetch('http://tinydev.rerum.io/app/query', {
+    let allNotes = await fetch('http://lived-religion-dev.rerum.io/deer-lr/query', {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -34,12 +36,12 @@ async function getNotesInQueue() {
             `
                 <li id=${noteObject["@id"]} class="collection-item">
                     ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
-                    <i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
                 </li>
             `    
+            //<i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
         })
         sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
-        addedNotes.innerHTML = notesString   
+        addedNotes.innerHTML += notesString   
     }
     else{
         sessionStorage.setItem("mobile_notes", "[]")
@@ -77,7 +79,7 @@ async function submitNote() {
      * That API needs to be CORS friendly to this companion app.
      * TODO: Make the Lived Religion web app API check if the user is logged in before doing server stuff?
      */
-    const newNote = await fetch("http://tinydev.rerum.io/app/create", {
+    const newNote = await fetch("http://lived-religion-dev.rerum.io/deer-lr/create", {
         method: "POST",
         mode: "cors",
         headers: {
@@ -124,6 +126,7 @@ async function removeNote(noteID) {
     /**
      * Is this only something you can do from the desktop site?? Not sure if we will offer this. 
      */
+    return
     let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
     allNotes = allNotes.filter(obj => obj["@id"] !== noteID)
     document.getElementById(noteID).remove()
