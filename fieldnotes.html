@@ -75,13 +75,13 @@
 <body>
     <lr-login></lr-login>
     <site-nav></site-nav>
-    <div id="keepNote" class="ab1 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
+    <div onmousedown="submitNote(event)" id="keepNote" class="ab1 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
         <small class="iconText">keep</small>
         <a class="btn-floating btn-large light-blue">
             <i class="material-icons">data_saver_on</i>
         </a>
     </div>
-    <div id="clearNote" class="ab2 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
+    <div onmousedown="cancelNote(event)" id="clearNote" class="ab2 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
         <small class="iconText">clear</small>
         <a class="btn-floating btn-large red ">
             <i class="material-icons">backspace</i>
@@ -98,17 +98,17 @@
             <div class="row">
                 <div class="col center" style="width: 100%;">
                     <h4>Field Notes</h4>
-                    <textarea placeholder="Send yourself a scratch note..." id="notes" ></textarea>
+                    <textarea onfocusin="showActionButtons(event)" onfocusout="hideActionButtons(event)" placeholder="Send yourself a scratch note..." id="notes" ></textarea>
                 </div>
             </div>
             <div class="row hide-on-small-and-down">
                 <div class="col center" style="width: 100%;">
                     <div class="center notestatus"></div>
-                    <div onclick="submitNote(event)" class="action dropdown-trigger" style="display: inline-block;">
+                    <div onmousedown="submitNote(event)" class="action dropdown-trigger" style="display: inline-block;">
                         <span title="Upload this note to self for review later at a computer" class="light">Store Note</span><br>
                         <i title="Tap here to keep this note-to-self" class="material-icons medium light-blue-text">data_saver_on</i>
                     </div>
-                    <div onclick="cancelNote(event)" class="action dropdown-trigger" style="display: inline-block;">
+                    <div onmousedown="cancelNote(event)" class="action dropdown-trigger" style="display: inline-block;">
                         <span title="Forget this note, it is no good." class="light">Cancel Note</span><br>
                         <i title="Tap here to start over" class="material-icons medium light-blue-text">backspace</i>
                     </div>
@@ -146,7 +146,7 @@
       //   document.getElementById("keepNote").click()
       // }
     })
-    keepNote.addEventListener("onmousedown", submitNote(event))
+    //keepNote.addEventListener("onmousedown", submitNote(event))
 
     //Should there be a hotkey to trigger the cancelNote?
     clearNote.addEventListener("keypress", function(event) {
@@ -155,11 +155,7 @@
       //   document.getElementById("clearNote").click()
       // }
     })
-    clearNote.addEventListener("onmousedown", cancelNote(event))
-
-    notes.addEventListener("onfocusin", showActionButtons(event))
-    notes.addEventListener("onfocusout", hideActionButtons(event))
-
+    //clearNote.addEventListener("onmousedown", cancelNote(event))
 
     function showActionButtons(){
         document.querySelectorAll(".fixed-action-btn").forEach(b => {
