@@ -108,3 +108,15 @@ h6 {
 quick-actions nav {
   bottom:0;
 }
+lr-login{
+    position: relative;
+    float: right;
+    z-index: 2;
+    margin-right: 1em;
+    margin-top: 4px;
+    text-decoration: underline;
+}
+.logout{
+    color: white;
+    font-weight: bold;
+}

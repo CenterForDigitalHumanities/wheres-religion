@@ -142,9 +142,7 @@ class LrLogin extends HTMLElement {
         }
         if (this.hasAttribute("wr-user")) {
             //<a>${user.name}</a>
-            this.innerHTML = `<div class="tabs">
-                <a title="${user.name}" href="logout.html">Logout</a>
-            </div>`
+            this.innerHTML = `<a class="logout" title="${user.name}" href="logout.html">Logout</a>`
         } else {
             this.innerHTML = `
             <style>

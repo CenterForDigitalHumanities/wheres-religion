@@ -75,13 +75,13 @@
 <body>
     <lr-login></lr-login>
     <site-nav></site-nav>
-    <div onmousedown="submitNote(event)" class="ab1 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
+    <div id="keepNote" class="ab1 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
         <small class="iconText">keep</small>
         <a class="btn-floating btn-large light-blue">
             <i class="material-icons">data_saver_on</i>
         </a>
     </div>
-    <div onmousedown="cancelNote(event)" class="ab2 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
+    <div id="clearNote" class="ab2 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
         <small class="iconText">clear</small>
         <a class="btn-floating btn-large red ">
             <i class="material-icons">backspace</i>
@@ -98,8 +98,7 @@
             <div class="row">
                 <div class="col center" style="width: 100%;">
                     <h4>Field Notes</h4>
-                    <small>Manage your fields notes in the LRDA Web App</small>
-                    <textarea id="notes" onfocusin="showActionButtons()" onfocusout="hideActionButtons()"></textarea>
+                    <textarea id="notes" ></textarea>
                 </div>
             </div>
             <div class="row hide-on-small-and-down">
@@ -119,6 +118,9 @@
                 <ul id="addedNotes" class="collection with-header">
                     <li class="collection-header center">
                         <h6>Submitted Notes</h6>
+                        <small>
+                            <a href="http://lived-religion.rerum.io/deer-lr/fieldnotes.html">Manage your fields notes in the LRDA Web App</a>
+                        </small>
                     </li>
                 </ul>
             </div>
@@ -133,6 +135,31 @@
     addEventListener('wrUserKnown', event => {
         getNotesInQueue()
     }, false) 
+
+    /**
+     * Various event listeners to help the mobile UX along.
+     */ 
+    //Should 'Enter' submit?
+    keepNote.addEventListener("keypress", function(event) {
+      // if (event.key === "Enter") {
+      //   event.preventDefault();
+      //   document.getElementById("keepNote").click()
+      // }
+    })
+    keepNote.addEventListener("onmousedown", submitNote(event))
+
+    //Should there be a hotkey to trigger the cancelNote?
+    clearNote.addEventListener("keypress", function(event) {
+      // if (event.key === "Esc") {
+      //   event.preventDefault();
+      //   document.getElementById("clearNote").click()
+      // }
+    })
+    clearNote.addEventListener("onmousedown", cancelNote(event))
+
+    notes.addEventListener("onfocusin", showActionButtons(event))
+    notes.addEventListener("onfocusout", hideActionButtons(event))
+
 
     function showActionButtons(){
         document.querySelectorAll(".fixed-action-btn").forEach(b => {
