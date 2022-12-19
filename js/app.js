@@ -3,7 +3,7 @@
  * 
  */
 
-async function login(loginWidget, data, submitEvent){
+async function login(loginWidget, data, submitEvent, redirect){
     let authenticatedUser = await fetch('http://lived-religion.rerum.io/deer-lr/login', {
         method: "POST",
         mode: "cors",
@@ -33,7 +33,12 @@ async function login(loginWidget, data, submitEvent){
     
     if (authenticatedUser && authenticatedUser["@id"]) {
         localStorage.setItem("wr-user", JSON.stringify(authenticatedUser))
-        document.location.reload() 
+        if(redirect){
+            document.location.href = "dashboard.html"
+        }
+        else{
+            document.location.reload() 
+        }
     } 
     else {
         localStorage.removeItem("wr-user")

@@ -16,13 +16,14 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/app.js" defer></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js" defer></script>
   <script>
     $(document).ready(function () {
       $('quick-actions')[0].addAction('Capture Media','add_a_photo','/media.html')
-      $('quick-actions')[0].addAction('&plus;Location','pin_drop','/location.html')
-      $('quick-actions')[0].addAction('&plus;Experience','today','/experience.html')
+      $('quick-actions')[0].addAction('Entry','snippet_folder','/entry.html')
+      $('quick-actions')[0].addAction('Fieldnotes','edit_note','/fieldnotes.html')
     })
   </script>
 
