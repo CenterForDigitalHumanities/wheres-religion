@@ -67,7 +67,7 @@ async function getNotesInQueue_local() {
             `
                 <li id=${noteObject.id} class="collection-item">
                     ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
-                    <i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+                    <i title="Tap here to remove this note." onclick="removeNote('${noteObject["id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
                 </li>
             `    
         })
@@ -197,7 +197,7 @@ function cancelNote(event) {
  */
 function removeNote(noteID) {
     let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-    allNotes = allNotes.filter(obj => obj["@id"] !== noteID)
+    allNotes = allNotes.filter(obj => obj["id"] !== noteID)
     document.getElementById(noteID).remove()
     sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
     dispatchEvent(new CustomEvent('noteDataUpdated', { detail: { note: noteID }, composed: true, bubbles: true })) 
