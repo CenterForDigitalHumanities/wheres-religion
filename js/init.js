@@ -208,3 +208,31 @@ class LrLogin extends HTMLElement {
 }
 customElements.define("lr-login", LrLogin)
 
+class LrNotifier extends HTMLElement {
+    constructor() {
+        super()
+        let user = localStorage.getItem("wr-user")
+        if (!user) {
+            return
+        }
+        let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+        if(allNotes){
+          this.innerHTML = `<label class="notesAvailable"> <i class="material-icons">chat</i>${allNotes.length}</label>`  
+        }
+    }
+    connectedCallback() {
+      /**
+      * Catch user detection and trigger draw() for interfaces.
+      */
+      addEventListener('noteDataUpdated', event => {
+        let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+        if(allNotes){
+          this.innerHTML = `<label class="notesAvailable"> <i class="material-icons">chat</i>${allNotes.length}</label>`  
+        }
+      }, false)   
+    }
+
+    
+}
+customElements.define("lr-notifier", LrNotifier)
+

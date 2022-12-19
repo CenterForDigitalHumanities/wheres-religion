@@ -49,6 +49,37 @@ async function getNotesInQueue() {
 }
 
 /**
+ * Query for all the notes in the user's notes queue and paginate them.
+ */
+async function getNotesInQueue_local() {
+    let user = JSON.parse(localStorage.getItem("wr-user"))
+    if (!user || !user["@id"]) {
+        //alert("You must be logged in to submit a note")
+        localStorage.removeItem("wr-user")
+        localStorage.removeItem("mobile_notes")
+        return
+    }
+    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+    if(allNotes){
+        let notesString = ""
+        allNotes.forEach(noteObject => {
+            notesString +=
+            `
+                <li id=${noteObject["@id"]} class="collection-item">
+                    ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
+                </li>
+            `    
+            //<i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+        })
+        sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
+        addedNotes.innerHTML += notesString   
+    }
+    else{
+        sessionStorage.setItem("mobile_notes", "[]")
+    }
+}
+
+/**
  * Add the "Note Notification" to the queue.
  * Add the HTML <li> element for this note, and add it to cache. 
  */
@@ -113,6 +144,44 @@ async function submitNote(event) {
 }
 
 /**
+ * Add the "Note Notification" to the queue.
+ * Add the HTML <li> element for this note, and add it to cache. 
+ */
+function submitNote_local(event) {
+    event.stopPropagation()
+    event.preventDefault()
+    let entity = location.hash
+    if (!notes || !notes.value) {
+        return
+    }
+    let user = JSON.parse(localStorage.getItem("wr-user"))
+    if (!user || !user["@id"]) {
+        alert("You must be logged in to submit a note")
+        localStorage.removeItem("wr-user")
+        localStorage.removeItem("mobile_notes")
+        return
+    }
+    let newNote = {
+        "id" : Date.now(),
+        "type": "MobileNote",
+        "value": notes.value,
+        "target": entity
+    }
+    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+    allNotes.push(newNote)
+    sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
+    addedNotes.innerHTML +=
+    `
+        <li id=${newNote["@id"]} class="collection-item">
+            ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
+            <i title="Tap here to remove this note." onclick="removeNote('${newNote["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+        </li>
+    `
+    notes.value = ""     
+    dispatchEvent(new CustomEvent('noteDataUpdated', { detail: { note: newNote }, composed: true, bubbles: true })) 
+}
+
+/**
  * Just the best, I'm keeping it.
  */
 function cancelNote(event) {
@@ -126,13 +195,10 @@ function cancelNote(event) {
  * Remove the HTML <li> element for this note, and remove it from cache. 
  * @param {string} noteID - A unique string (probably a URI) that relates to an HTMLElement 'id' attribute
  */
-async function removeNote(noteID) {
-    /**
-     * Is this only something you can do from the desktop site?? Not sure if we will offer this. 
-     */
-    return
+function removeNote(noteID) {
     let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
     allNotes = allNotes.filter(obj => obj["@id"] !== noteID)
     document.getElementById(noteID).remove()
     sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
+    dispatchEvent(new CustomEvent('noteDataUpdated', { detail: { note: noteID }, composed: true, bubbles: true })) 
 }

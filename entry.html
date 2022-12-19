@@ -23,6 +23,7 @@
 
 <body>
     <lr-login></lr-login>
+    <lr-notifier></lr-notifier>
     <site-nav></site-nav>
     <div class="section">
         <div class="container">
@@ -34,5 +35,53 @@
     <site-footer></site-footer>
 
 </body>
+
+<script>
+/**
+ * TODO
+ * The user will select an existing Archtype or generate a new Archtype.
+ * This will provide an entity URI, which should be assigned to location.hash
+ * All data created in the rest of the app will target the value of the hash. 
+ */ 
+let entity = location.hash
+// All of our notes already target this entity, so this entity is "selected"
+// If there is no hash (no entity is selected) the user needs to select one now before they can save.
+
+/**
+ * Go over each note in the queue, grab its data, assign to the designated entity and entity descriptor
+ */
+function selectEntity(event) {
+    if(location.hash){
+        // If we are selecting a new entity, then the mobile notes need to know about their new target.
+        // Loop mobile notes in sessionStorage and update their target
+    }
+    let entityID = event.target.value
+    location.hash = entityID
+}
+
+/**
+ * Go over each note in the queue, grab its data, assign to the designated entity and entity descriptor
+ */
+async function submitNotes(event) {
+    event.stopPropagation()
+    event.preventDefault()
+    if (!notes || !notes.value) {
+        return
+    }
+    let user = JSON.parse(localStorage.getItem("wr-user"))
+    if (!user || !user["@id"]) {
+        alert("You must be logged in to submit")
+        localStorage.removeItem("wr-user")
+        //localStorage.removeItem("mobile_notes")
+        return
+    }
+    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+    for await (const note of allNotes){
+        // Turn note into the correct Annotation, check if that Annotation exists
+        // If Annotation already exists, update it by adding in the text from this note
+        // If not, generate that Annotation for the entity noted in location.hash   
+    }
+}
+</script>
 
 </html>
