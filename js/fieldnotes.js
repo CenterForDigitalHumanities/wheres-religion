@@ -9,7 +9,7 @@ async function getNotesInQueue() {
     if (!user || !user["@id"]) {
         //alert("You must be logged in to submit a note")
         localStorage.removeItem("wr-user")
-        localStorage.removeItem("mobile_notes")
+        sessionStorage.removeItem("mobile_notes")
         return
     }
     const historyWildcard = {"$exists":true, "$size":0}
@@ -56,23 +56,23 @@ async function getNotesInQueue_local() {
     if (!user || !user["@id"]) {
         //alert("You must be logged in to submit a note")
         localStorage.removeItem("wr-user")
-        localStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("mobile_notes")
         return
     }
     let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-    if(allNotes){
+    if(allNotes.length){
         let notesString = ""
         allNotes.forEach(noteObject => {
             notesString +=
             `
-                <li id=${noteObject["@id"]} class="collection-item">
+                <li id=${noteObject.id} class="collection-item">
                     ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
+                    <i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
                 </li>
             `    
-            //<i title="Tap here to remove this note." onclick="removeNote('${noteObject["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
         })
         sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
-        addedNotes.innerHTML += notesString   
+        addedNotes.innerHTML = notesString   
     }
     else{
         sessionStorage.setItem("mobile_notes", "[]")
@@ -93,7 +93,7 @@ async function submitNote(event) {
     if (!user || !user["@id"]) {
         alert("You must be logged in to submit a note")
         localStorage.removeItem("wr-user")
-        localStorage.removeItem("mobile_notes")
+        sessionStorage.removeItem("mobile_notes")
         return
     }
     // My bucket is all notes targeted at me.  Presumably, these are all the notes I have added.
@@ -158,7 +158,7 @@ function submitNote_local(event) {
     if (!user || !user["@id"]) {
         alert("You must be logged in to submit a note")
         localStorage.removeItem("wr-user")
-        localStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("mobile_notes")
         return
     }
     let newNote = {
@@ -172,9 +172,9 @@ function submitNote_local(event) {
     sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
     addedNotes.innerHTML +=
     `
-        <li id=${newNote["@id"]} class="collection-item">
+        <li id=${newNote.id} class="collection-item">
             ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
-            <i title="Tap here to remove this note." onclick="removeNote('${newNote["@id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+            <i title="Tap here to remove this note." onclick="removeNote('${newNote.id}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
         </li>
     `
     notes.value = ""     

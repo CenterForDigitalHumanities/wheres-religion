@@ -116,6 +116,16 @@ lr-login{
     margin-top: 4px;
     text-decoration: underline;
 }
+lr-notifier{
+    position: relative;
+    float: right;
+    z-index: 2;
+    margin-right: 3em;
+    margin-top: 4px;
+}
+.notesAvailable{
+  display: inline-block;
+}
 .logout{
     color: white;
     font-weight: bold;

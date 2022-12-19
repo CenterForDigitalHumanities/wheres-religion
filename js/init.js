@@ -27,6 +27,8 @@ class SiteNav extends HTMLElement {
             <li><a href="/dashboard.html">Previous Entries <i class="material-icons right">border_color</i></a></li>
             <li><a href="/about.html">About <i class="material-icons right">question_answer</i></a></li>
           </ul>
+          <lr-login></lr-login>
+          <lr-notifier></lr-notifier>
         </div>
       </nav>
     </div>
@@ -53,6 +55,8 @@ class SiteNav extends HTMLElement {
           <li><a href="/about.html">About <i class="material-icons right">question_answer</i></a></li>
         </ul>
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <lr-login></lr-login>
+        <lr-notifier></lr-notifier>
       </div>
     </nav>
     `
@@ -109,14 +113,6 @@ customElements.define('site-footer', SiteFooter)
 class quickActions extends HTMLElement {
   constructor() {
     super()
-    addEventListener('wrUserKnown', event => {
-        let user = event.detail.user
-        if(user !== null){
-            if(user.roles.administrator){
-
-            }
-        }
-    })
   }
   connectedCallback() {
     this.innerHTML = `
@@ -217,7 +213,10 @@ class LrNotifier extends HTMLElement {
         }
         let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
         if(allNotes){
-          this.innerHTML = `<label class="notesAvailable"> <i class="material-icons">chat</i>${allNotes.length}</label>`  
+          this.innerHTML = `
+            <a title="You have unprocessed entries" class="notesAvailable" href="fieldnotes.html"><i class="material-icons">chat</i></a>
+            <span class="notesAvailable">${allNotes.length}</span>
+          `  
         }
     }
     connectedCallback() {
@@ -227,9 +226,12 @@ class LrNotifier extends HTMLElement {
       addEventListener('noteDataUpdated', event => {
         let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
         if(allNotes){
-          this.innerHTML = `<label class="notesAvailable"> <i class="material-icons">chat</i>${allNotes.length}</label>`  
+          this.innerHTML = `
+            <a title="You have unprocessed entries" class="notesAvailable" href="fieldnotes.html"><i class="material-icons">chat</i></a>
+            <span class="notesAvailable">${allNotes.length}</span>
+          `  
         }
-      }, false)   
+      }, false)
     }
 
     

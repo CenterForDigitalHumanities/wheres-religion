@@ -24,7 +24,6 @@
         $('quick-actions')[0].addAction('Entry', 'snippet_folder', '/entry.html')
         $('quick-actions')[0].addAction('Capture Media', 'add_a_photo', '/media.html')
         $('quick-actions')[0].addAction('Map', 'pin_drop', '/map.html')
-        sessionStorage.setItem("mobile_notes", "[]")
         var fab = document.querySelectorAll('.fixed-action-btn')
         var instances = M.FloatingActionButton.init(fab, {
             hoverEnabled: false
@@ -73,8 +72,6 @@
 </head>
 
 <body>
-    <lr-login></lr-login>
-    <lr-notifier></lr-notifier>
     <site-nav></site-nav>
     <div onmousedown="submitNote_local(event)" id="keepNote" class="ab1 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
         <small class="iconText">keep</small>
