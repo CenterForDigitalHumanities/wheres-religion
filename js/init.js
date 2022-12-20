@@ -28,7 +28,8 @@ class SiteNav extends HTMLElement {
             <li><a href="/about.html">About <i class="material-icons right">question_answer</i></a></li>
           </ul>
           <lr-login></lr-login>
-          <lr-notifier></lr-notifier>
+          <lr-media-notifier></lr-media-notifier>
+          <lr-note-notifier></lr-note-notifier>
         </div>
       </nav>
     </div>
@@ -56,7 +57,8 @@ class SiteNav extends HTMLElement {
         </ul>
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <lr-login></lr-login>
-        <lr-notifier></lr-notifier>
+        <lr-media-notifier></lr-media-notifier>
+        <lr-note-notifier></lr-note-notifier>
       </div>
     </nav>
     `
@@ -168,8 +170,9 @@ class LrLogin extends HTMLElement {
             fieldset {
                 background: #FFF;
                 box-shadow: 0 0 0 2rem #FFF, .25rem .25rem 2rem 2rem #000;
-                top: 15vh;
+                top: 1vh;
                 position: relative;
+                color: black;
             }
 
             </style>
@@ -194,7 +197,7 @@ class LrLogin extends HTMLElement {
             lrLogin.querySelector('FORM').onsubmit = async function(event) {
                 event.preventDefault()
                 let data = new FormData(this)
-                let userData = await login(lrLogin, data, event, false)
+                const userData = await login(lrLogin, data, event, false)
             }
         } catch (err) {
             // already logged in or other error
@@ -204,37 +207,75 @@ class LrLogin extends HTMLElement {
 }
 customElements.define("lr-login", LrLogin)
 
-class LrNotifier extends HTMLElement {
+class LrNoteNotifier extends HTMLElement {
     constructor() {
         super()
-        let user = localStorage.getItem("wr-user")
+        const user = localStorage.getItem("wr-user")
         if (!user) {
             return
         }
-        let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-        if(allNotes){
-          this.innerHTML = `
-            <a title="You have unprocessed entries" class="notesAvailable" href="fieldnotes.html"><i class="material-icons">chat</i></a>
-            <span class="notesAvailable">${allNotes.length}</span>
-          `  
-        }
+        const allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+        this.innerHTML = `
+          <a title="${allNotes.length>0 ? "You have unprocessed notes":""}" class="notesAvailable" href="fieldnotes.html"><i class="material-icons">chat</i></a>
+          <span class="notesAvailable">${allNotes.length}</span>
+        `  
+        
     }
     connectedCallback() {
       /**
       * Catch user detection and trigger draw() for interfaces.
       */
       addEventListener('noteDataUpdated', event => {
-        let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-        if(allNotes){
-          this.innerHTML = `
-            <a title="You have unprocessed entries" class="notesAvailable" href="fieldnotes.html"><i class="material-icons">chat</i></a>
-            <span class="notesAvailable">${allNotes.length}</span>
-          `  
+        const allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+        this.innerHTML = `
+          <a title="${allNotes.length>0 ? "You have unprocessed notes":""}" class="notesAvailable" href="fieldnotes.html"><i class="material-icons">chat</i></a>
+          <span class="notesAvailable">${allNotes.length}</span>
+        `  
+      }, false)
+    }
+}
+customElements.define("lr-note-notifier", LrNoteNotifier)
+
+class LrMediaNotifier extends HTMLElement {
+    constructor() {
+        super()
+        const user = localStorage.getItem("wr-user")
+        if (!user) {
+            return
         }
+        const mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? 
+        {
+          "body":{
+            "associatedMedia":{
+               "items" : []
+            }
+          }
+        }
+        this.innerHTML = `
+          <a title="${mediaObj.body.associatedMedia.items.length>0 ? "You have unprocessed media attachments":""}" class="mediaAvailable" href="media.html"><i class="material-icons">photo_library</i></a>
+          <span class="notesAvailable">${mediaObj.body.associatedMedia.items.length}</span>
+        `  
+    }
+    connectedCallback() {
+      /**
+      * Catch user detection and trigger draw() for interfaces.
+      */
+      addEventListener('mediaDataUpdated', event => {
+        const mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? {
+          "body":{
+            "associatedMedia":{
+               "items" : []
+            }
+          }
+        }
+        this.innerHTML = `
+          <a title="${mediaObj.body.associatedMedia.items.length>0 ? "You have unprocessed media attachments":""}" class="mediaAvailable" href="media.html"><i class="material-icons">photo_library</i></a>
+          <span class="notesAvailable">${mediaObj.body.associatedMedia.items.length>0}</span>
+        `  
       }, false)
     }
 
     
 }
-customElements.define("lr-notifier", LrNotifier)
+customElements.define("lr-media-notifier", LrMediaNotifier)
 

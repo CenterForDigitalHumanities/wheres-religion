@@ -19,13 +19,6 @@
     <script src="js/app.js" defer></script>
     <script src="js/materialize.js"></script>
     <script src="js/init.js" defer></script>
-    <script src="js/media.js" defer></script>
-    <script>
-        $(document).ready(function () {
-          $('quick-actions')[0].addAction('Entry','snippet_folder','/entry.html')
-          $('quick-actions')[0].addAction('Fieldnotes','edit_note','/fieldnotes.html')
-        })
-    </script>
     <style>
         img.preview{
             max-width: 30em;
@@ -92,7 +85,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <h5> Uploaded Media </h5>
+                    <h5 class="center"> Uploaded Media </h5>
                     <ul id="addedMedia" class="collection" style="width: 100%;">
                     </ul>
                 </div>
@@ -100,13 +93,18 @@
         </div>
     </div>
     <site-footer></site-footer>
+    <script src="js/media.js"></script>
     <script>
-        /**
-        * Catch user detection and trigger draw() for interfaces.
-        */
-        addEventListener('wrUserKnown', event => {
-            getMediaInQueue()
-        }, false)
+        $(document).ready(function () {
+          $('quick-actions')[0].addAction('Entry','snippet_folder','/entry.html')
+          $('quick-actions')[0].addAction('Fieldnotes','edit_note','/fieldnotes.html')
+          /**
+           * Catch user detection and trigger draw() for interfaces.
+           */
+            addEventListener('wrUserKnown', event => {
+                getMediaInQueue()
+            }, false)
+        })
     </script>
 </body>
 

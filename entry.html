@@ -64,16 +64,24 @@ async function submitNotes(event) {
     if (!notes || !notes.value) {
         return
     }
-    let user = JSON.parse(localStorage.getItem("wr-user"))
+    const user = JSON.parse(localStorage.getItem("wr-user"))
     if (!user || !user["@id"]) {
         alert("You must be logged in to submit")
-        localStorage.removeItem("wr-user")
-        //localStorage.removeItem("mobile_notes")
+        //localStorage.removeItem("wr-user")
+        //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
         return
     }
     let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-    let allMedia = JSON.parse(sessionStorage.getItem("associated_media")) ?? []
-    let all = [...allNotes, ...allMedia]
+    let mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? 
+    {
+      "body":{
+        "associatedMedia":{
+           "items" : []
+        }
+      }
+    }
+    let all = [...allNotes, mediaObj]
     for await (const descriptor of all){
         // Turn descriptor into the correct Annotation, check if that Annotation exists
         // If Annotation already exists, update it by adding in the text from this note
@@ -107,7 +115,14 @@ function chooseNote(event, noteID, elem){
 
 // Should we be doing this with DEER or something??
 async function assignDescriptor(descriptor) {
-    let user = JSON.parse(localStorage.getItem("lr-user"))
+    const user = JSON.parse(localStorage.getItem("lr-user"))
+    if (!user || !user["@id"]) {
+        alert("You must be logged in to submit")
+        //localStorage.removeItem("wr-user")
+        //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
+        return
+    }
     let entity = location.hash ? location.hash.slice(1) : ""
     let key = Object.keys(descriptor.body)[0]
     //Check if the experience already has this annotation

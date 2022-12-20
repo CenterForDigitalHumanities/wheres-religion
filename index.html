@@ -91,7 +91,7 @@
 
   <site-footer></site-footer>
   <script>
-      let user = localStorage.getItem("wr-user")
+      const user = localStorage.getItem("wr-user")
       if (user !== null) {
           try {
               user = JSON.parse(user)
@@ -104,7 +104,7 @@
       userLogin.onsubmit = async function(event) {
           event.preventDefault()
           let data = new FormData(this)
-          let userData = await login(lrLogin, data, event, true)
+          const userData = await login(lrLogin, data, event, true)
       }
       
   </script>

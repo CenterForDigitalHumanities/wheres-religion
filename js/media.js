@@ -98,32 +98,33 @@ function uploadFile() {
  * Query for all the notes in the user's notes queue and paginate them.
  */
 async function getMediaInQueue() {
-    let user = JSON.parse(localStorage.getItem("wr-user"))
+    const user = JSON.parse(localStorage.getItem("wr-user"))
     if (!user || !user["@id"]) {
         //alert("You must be logged in to submit a note")
-        localStorage.removeItem("wr-user")
+        //localStorage.removeItem("wr-user")
         //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
         return
     }
-    let allMedia = JSON.parse(sessionStorage.getItem("associated_media")) ?? []
-    if(allMedia.length){
-        let mediaString = ""
-        allMedia.forEach(mediaObj => {
-            let uri = mediaObj.body.associatedMedia.items[0]
-            mediaString +=
-            `
-                <li id=${mediaObj.id} class="collection-item">
-                    ${uri > 50 ? uri.substring(0, 50)+"..." : uri}
-                    <i title="Tap here to remove this note." onclick="removeMedia('${mediaObj["id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
-                </li>
-            `    
-        })
-        sessionStorage.setItem("associated_media", JSON.stringify(allMedia))
-        addedMedia.innerHTML = mediaString   
+    let mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? 
+    {
+      "body":{
+        "associatedMedia":{
+           "items" : []
+        }
+      }
     }
-    else{
-        sessionStorage.setItem("associated_media", "[]")
-    }
+    let mediaString = ""
+    mediaObj.body.associatedMedia.items.forEach(uri => {
+        mediaString +=
+        `
+            <li id=${uri} class="collection-item">
+                ${uri > 50 ? uri.substring(0, 50)+"..." : uri}
+                <i title="Tap here to remove this note." onclick="removeMedia('${uri}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+            </li>
+        `    
+    })
+    addedMedia.innerHTML = mediaString   
 }
 
 /**
@@ -131,9 +132,11 @@ async function getMediaInQueue() {
  */
 function storeLocalMediaAssertion(uri) {
     // Prepare a local 
-    let user = JSON.parse(localStorage.getItem("wr-user"))
+    const user = JSON.parse(localStorage.getItem("wr-user"))
     if (!user || !user["@id"]) {
-        localStorage.removeItem("wr-user")
+        //localStorage.removeItem("wr-user")
+        //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
         return
     }
     let t = location.hash ? location.hash.slice(1) : "will be assigned later"
@@ -141,7 +144,7 @@ function storeLocalMediaAssertion(uri) {
         "@context": "http://lived-religion.rerum.io/deer-lr/vocab/context.json",
         "id" : Date.now(),
         "type": "Annotation",
-        "motivation": "supplementing"
+        "motivation": "supplementing",
         "target": t,
         "body": {
             "associatedMedia": {
@@ -152,9 +155,7 @@ function storeLocalMediaAssertion(uri) {
         "creator": user["@id"],
     }
     mediaObj.body.associatedMedia.items.push(uri)
-    let mediaArray = JSON.parse(sessionStorage.getItem("associated_media")) ?? []
-    mediaArray.push(mediaObj)
-    sessionStorage.setItem("associated_media", JSON.stringify(mediaArray))
+    sessionStorage.setItem("associated_media", JSON.stringify(mediaObj))
     addedMedia.innerHTML +=
     `
         <li id=${mediaObj.id} class="collection-item">
@@ -171,11 +172,19 @@ function storeLocalMediaAssertion(uri) {
  * @param {string} noteID - A unique string (probably a URI) that relates to an HTMLElement 'id' attribute
  */
 function removeMedia(mediaID) {
-    let mediaArray = JSON.parse(sessionStorage.getItem("associated_media")) ?? []
-    mediaArray = mediaArray.filter(obj => obj["id"] !== mediaID)
+    let mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? 
+    {
+      "body":{
+        "associatedMedia":{
+           "items" : []
+        }
+      }
+    }
+    let mediaArray = mediaObj.body.associatedMedia.items
+    mediaObj.body.associatedMedia.items = mediaArray.filter(uri => uri !== mediaID)
     document.getElementById(mediaID).remove()
-    sessionStorage.setItem("associated_media", JSON.stringify(mediaArray))
-    dispatchEvent(new CustomEvent('mediaDataUpdated', { detail: mediaArray, composed: true, bubbles: true })) 
+    sessionStorage.setItem("associated_media", JSON.stringify(mediaObj))
+    dispatchEvent(new CustomEvent('mediaDataUpdated', { detail: mediaObj, composed: true, bubbles: true })) 
 }
 
 /**

@@ -116,7 +116,14 @@ lr-login{
     margin-top: 4px;
     text-decoration: underline;
 }
-lr-notifier{
+lr-note-notifier{
+    position: relative;
+    float: right;
+    z-index: 2;
+    margin-right: 1em;
+    margin-top: 4px;
+}
+lr-media-notifier{
     position: relative;
     float: right;
     z-index: 2;
@@ -124,6 +131,9 @@ lr-notifier{
     margin-top: 4px;
 }
 .notesAvailable{
+  display: inline-block;
+}
+.mediaAvailable{
   display: inline-block;
 }
 .logout{

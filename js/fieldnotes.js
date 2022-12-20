@@ -5,11 +5,12 @@ const APPAGENT="http://store.rerum.io/v1/id/630e79471267884358921da7"
  * Query for all the notes in the user's notes queue and paginate them.
  */
 async function getNotesInQueue() {
-    let user = JSON.parse(localStorage.getItem("wr-user"))
+    const user = JSON.parse(localStorage.getItem("wr-user"))
     if (!user || !user["@id"]) {
         //alert("You must be logged in to submit a note")
         localStorage.removeItem("wr-user")
-        sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
         return
     }
     const historyWildcard = {"$exists":true, "$size":0}
@@ -52,31 +53,25 @@ async function getNotesInQueue() {
  * Query for all the notes in the user's notes queue and paginate them.
  */
 async function getNotesInQueue_local() {
-    let user = JSON.parse(localStorage.getItem("wr-user"))
+    const user = JSON.parse(localStorage.getItem("wr-user"))
     if (!user || !user["@id"]) {
-        //alert("You must be logged in to submit a note")
-        localStorage.removeItem("wr-user")
+        //localStorage.removeItem("wr-user")
         //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
         return
     }
-    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-    if(allNotes.length){
-        let notesString = ""
-        allNotes.forEach(noteObject => {
-            notesString +=
-            `
-                <li id=${noteObject.id} class="collection-item">
-                    ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
-                    <i title="Tap here to remove this note." onclick="removeNote('${noteObject["id"]}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
-                </li>
-            `    
-        })
-        sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
-        addedNotes.innerHTML = notesString   
-    }
-    else{
-        sessionStorage.setItem("mobile_notes", "[]")
-    }
+    const allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+    let notesString = ""
+    allNotes.forEach(noteObject => {
+        notesString +=
+        `
+            <li id=${noteObject.id} class="collection-item">
+                ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
+                <i title="Tap here to remove this note." onclick="removeNote('${noteObject.id}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+            </li>
+        `    
+    })
+    addedNotes.innerHTML = notesString   
 }
 
 /**
@@ -89,18 +84,18 @@ async function submitNote(event) {
     if (!notes || !notes.value) {
         return
     }
-    let user = JSON.parse(localStorage.getItem("wr-user"))
+    const user = JSON.parse(localStorage.getItem("wr-user"))
     if (!user || !user["@id"]) {
         alert("You must be logged in to submit a note")
-        localStorage.removeItem("wr-user")
-        sessionStorage.removeItem("mobile_notes")
+        //localStorage.removeItem("wr-user")
+        //sessionStorage.removeItem("mobile_notes")
         return
     }
     // My bucket is all notes targeted at me.  Presumably, these are all the notes I have added.
     // They are Experience agnostic?  Can I send a note to myself and assign it to any experience?
     // Since it targets me, maybe 'creator' would be better?
     // What type should this be?
-    // Should it have a label/will we let users provide a label?
+    // Should it have a label/will we const users provide a label?
     // Note the time it was created will already be noted in __rerum.createdAt
     let noteObject = {
         "type": "MobileNote",
@@ -154,11 +149,12 @@ function submitNote_local(event) {
     if (!notes || !notes.value) {
         return
     }
-    let user = JSON.parse(localStorage.getItem("wr-user"))
+    const user = JSON.parse(localStorage.getItem("wr-user"))
     if (!user || !user["@id"]) {
         alert("You must be logged in to submit a note")
-        localStorage.removeItem("wr-user")
+        //localStorage.removeItem("wr-user")
         //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
         return
     }
     let newNote = {
