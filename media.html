@@ -90,9 +90,24 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col">
+                    <h5> Uploaded Media </h5>
+                    <ul id="addedMedia" class="collection" style="width: 100%;">
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     <site-footer></site-footer>
+    <script>
+        /**
+        * Catch user detection and trigger draw() for interfaces.
+        */
+        addEventListener('wrUserKnown', event => {
+            getMediaInQueue()
+        }, false)
+    </script>
 </body>
 
 </html>

@@ -105,15 +105,21 @@ function chooseNote(event, noteID, elem){
     }
 }
 
-// FROM LRDA web app.  Just a stub.  Still TODO.
 // Should we be doing this with DEER or something??
 async function assignDescriptor(descriptor) {
     let user = JSON.parse(localStorage.getItem("lr-user"))
     let entity = location.hash ? location.hash.slice(1) : ""
-
+    let key = Object.keys(descriptor.body)[0]
     //Check if the experience already has this annotation
     const historyWildcard = {"$exists":true, "$size":0}
-    let bodyPropValue = `body.${noteType}.value`
+    let typeCheck = descriptor.body["@type"] ?? descriptor.body.type ?? ""
+    let bodyPropValue
+    if(typeCheck === "Set" || typeCheck == "List"){
+        bodyPropValue = `body.${key}.items`
+    }
+    else{
+        bodyPropValue = `body.${key}.value`
+    }
     const queryObj = {
         "type" : "Annotation",
         "target" : entity,
@@ -131,12 +137,11 @@ async function assignDescriptor(descriptor) {
     .catch(err => {return []})
     if(existingAssertion.length){
         let assertionToUpdate = existingAssertion[0]
-        let typeCheck = assertionToUpdate.body["@type"] ?? assertionToUpdate.body.type ?? ""
         if(typeCheck === "Set" || typeCheck == "List"){
-            assertionToUpdate.body[noteType].items.push(noteText)
+            assertionToUpdate.body[key].items = [...assertionToUpdate.body[key].items, ...descriptor.body[key].items]
         }
         else{
-           assertionToUpdate.body[noteType].value += " "+noteText 
+            assertionToUpdate.body[key].value += " "+noteText 
         }
         assertionToUpdate.creator = user["@id"]
         await fetch("http://lived-religion.rerum.io/deer-lr/update", {
@@ -184,7 +189,7 @@ async function assignDescriptor(descriptor) {
     }
 }
 
-//From LRDA Web App.  Just a stub.  Still TODO.
+//From LRDA Web App.  Just a stub.  Not sure they can even do this on entry.html.
 async function removeNote(event, noteID, noteElem, conf) {
     if(conf){
         if(!confirm("If you really want to remove this note, click OK.")){

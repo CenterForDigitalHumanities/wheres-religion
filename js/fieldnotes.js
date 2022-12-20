@@ -165,7 +165,8 @@ function submitNote_local(event) {
         "id" : Date.now(),
         "type": "MobileNote",
         "value": notes.value,
-        "target": entity
+        "target": entity,
+        "creator": user["@id"]
     }
     let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
     allNotes.push(newNote)
@@ -178,7 +179,7 @@ function submitNote_local(event) {
         </li>
     `
     notes.value = ""     
-    dispatchEvent(new CustomEvent('noteDataUpdated', { detail: { note: newNote }, composed: true, bubbles: true })) 
+    dispatchEvent(new CustomEvent('noteDataUpdated', { detail: newNote, composed: true, bubbles: true })) 
 }
 
 /**
