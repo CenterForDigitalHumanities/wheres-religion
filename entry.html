@@ -72,12 +72,18 @@ async function submitNotes(event) {
         return
     }
     let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
-    for await (const note of allNotes){
-        // Turn note into the correct Annotation, check if that Annotation exists
+    let allMedia = JSON.parse(sessionStorage.getItem("associated_media")) ?? []
+    let all = [...allNotes, ...allMedia]
+    for await (const descriptor of all){
+        // Turn descriptor into the correct Annotation, check if that Annotation exists
         // If Annotation already exists, update it by adding in the text from this note
         // If not, generate that Annotation for the entity noted in location.hash   
-        await assignNote(note)
+
+        // Prime candidate for Promise.all()
+        await assignDescriptor(descriptor)
     }
+    sessionStorage.removeItem("mobile_notes")
+    sessionStorage.removeItem("associated_media")
 }
 
 //From the LRDA web app.  Just a stub.  Still TODO
@@ -101,27 +107,20 @@ function chooseNote(event, noteID, elem){
 
 // FROM LRDA web app.  Just a stub.  Still TODO.
 // Should we be doing this with DEER or something??
-async function assignNote(event) {
+async function assignDescriptor(descriptor) {
     let user = JSON.parse(localStorage.getItem("lr-user"))
-    //If so, update by adding the text in
-    //If not, generate the annotation with this as the initial text. 
-    const expID = expChooser.value
-    const noteType = noteTypes.value
-    const noteElem = document.querySelector("li.selected")
-    const noteID = noteElem.getAttribute("noteid")
-    const noteText = noteElem.getAttribute("fulltext")
-    console.log("Experience that gets note is "+expID)
-    console.log("Type of note that it is (the Annotation key name) "+noteType)
+    let entity = location.hash ? location.hash.slice(1) : ""
+
     //Check if the experience already has this annotation
     const historyWildcard = {"$exists":true, "$size":0}
     let bodyPropValue = `body.${noteType}.value`
     const queryObj = {
         "type" : "Annotation",
-        "target" : expID,
+        "target" : entity,
         "__rerum.history.next" : historyWildcard,
     }
     queryObj[bodyPropValue] = {"$exists":true}
-    const existingAssertion = await fetch(LR.URLS.QUERY, {
+    const existingAssertion = await fetch("http://lived-religion.rerum.io/deer-lr/query", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -132,9 +131,15 @@ async function assignNote(event) {
     .catch(err => {return []})
     if(existingAssertion.length){
         let assertionToUpdate = existingAssertion[0]
-        assertionToUpdate.body[noteType].value += " "+noteText
+        let typeCheck = assertionToUpdate.body["@type"] ?? assertionToUpdate.body.type ?? ""
+        if(typeCheck === "Set" || typeCheck == "List"){
+            assertionToUpdate.body[noteType].items.push(noteText)
+        }
+        else{
+           assertionToUpdate.body[noteType].value += " "+noteText 
+        }
         assertionToUpdate.creator = user["@id"]
-        await fetch(LR.URLS.UPDATE, {
+        await fetch("http://lived-religion.rerum.io/deer-lr/update", {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json'
@@ -143,49 +148,37 @@ async function assignNote(event) {
         })
         .then(resp => {
             if(resp.ok){
-                LR.ui.globalFeedbackBlip(null, `Note Assigned`, true)
-                LR.utils.removeNote(event, "", noteElem, false)
-                assignNoteWrapper.classList.add("is-hidden")
+                console.log("Descriptor applied!")
+                console.log(descriptor)
             }
             else{
-                alert("Could not assign note.")
+                alert("Could not apply descriptor.")
             }
         })
         .catch(err => {
-            alert("Could not assign note")
+            alert("Could not apply descriptor.")
             return err
         })
     }
     else{
-        let newAssertion = {
-            "@context": "http://lived-religion.rerum.io/deer-lr/vocab/context.json",
-            "type": "Annotation",
-            "target": expID,
-            "body": {},
-            "creator": user["@id"],
-            "motivation": "supplementing",
-        }
-        newAssertion.body[noteType] = {}
-        newAssertion.body[noteType].value = noteText
-        await fetch(LR.URLS.CREATE, {
+        await fetch("http://lived-religion.rerum.io/deer-lr/create", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(assertionToUpdate)
+            body: JSON.stringify(descriptor)
         })
         .then(resp => {
             if(resp.ok){
-                LR.ui.globalFeedbackBlip(event, `Note Assigned`, true)
-                LR.utils.removeNote(null, "", noteElem, false)
-                assignNoteWrapper.classList.add("is-hidden")
+                console.log("Descriptor applied!")
+                console.log(descriptor)
             }
             else{
-                alert("Could not assign note.")
+                alert("Could not apply descriptor.")
             }
         })
         .catch(err => {
-            alert("Could not assign note")
+            alert("Could not apply descriptor")
             return err
         })
     }

@@ -94,6 +94,33 @@ function uploadFile() {
     })
 }
 
+/**
+ * The upload button was clicked.  Upload the file from the selected input.
+ */
+function storeLocalMediaAssertion(uri) {
+    // Prepare a local 
+    let user = JSON.parse(localStorage.getItem("wr-user"))
+    if (!user || !user["@id"]) {
+        localStorage.removeItem("wr-user")
+        return
+    }
+    let t = location.hash ? location.hash.slice(1) : "will be assigned later"
+    let mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? {
+        "@context": "http://lived-religion.rerum.io/deer-lr/vocab/context.json",
+        "type": "Annotation",
+        "motivation": "supplementing"
+        "target": t,
+        "body": {
+            "associatedMedia": {
+                "@type": "Set",
+                "items": []
+            }
+        },
+        "creator": user["@id"],
+    }
+    mediaObj.body.associatedMedia.items.push(uri)
+    sessionStorage.setItem("associated_media", JSON.stringify(mediaObj))
+}
 
 /**
  * The file upload was successful.
@@ -101,6 +128,7 @@ function uploadFile() {
  */
 function uploadComplete(uri) {
     mediaPreview.querySelector('.mediastatus').innerHTML = "Upload Complete!"
+    storeLocalMediaAssertion(uri,)
 }
 
 /**

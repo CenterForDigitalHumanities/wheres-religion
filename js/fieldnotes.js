@@ -150,7 +150,7 @@ async function submitNote(event) {
 function submitNote_local(event) {
     event.stopPropagation()
     event.preventDefault()
-    let entity = location.hash
+    let entity = location.hash ? location.hash.slice(1) : "will be assigned later"
     if (!notes || !notes.value) {
         return
     }

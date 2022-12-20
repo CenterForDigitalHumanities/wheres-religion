@@ -120,7 +120,7 @@ lr-notifier{
     position: relative;
     float: right;
     z-index: 2;
-    margin-right: 3em;
+    margin-right: 1em;
     margin-top: 4px;
 }
 .notesAvailable{

@@ -18,6 +18,8 @@ async function login(loginWidget, data, submitEvent, redirect){
     })
     .then(res =>{
         if(res.ok){
+            sessionStorage.removeItem("mobile_notes")
+            sessionStorage.removeItem("associated_media")
             return res.json()
         }
         else{
@@ -30,7 +32,6 @@ async function login(loginWidget, data, submitEvent, redirect){
         console.error(err)
         return {}
     })
-    
     if (authenticatedUser && authenticatedUser["@id"]) {
         localStorage.setItem("wr-user", JSON.stringify(authenticatedUser))
         if(redirect){
@@ -62,14 +63,20 @@ async function logout(){
     .then(res =>{
         if(res.ok){
             localStorage.removeItem("wr-user")
+            sessionStorage.removeItem("mobile_notes")
+            sessionStorage.removeItem("associated_media")
         }
         else{
             //TODO maybe handle special?  Something didn't work right, but we can still clear them from localStorage
             localStorage.removeItem("wr-user")
+            sessionStorage.removeItem("mobile_notes")
+            sessionStorage.removeItem("associated_media")
         }
     })
     .catch(err =>{
         localStorage.removeItem("wr-user")
+        sessionStorage.removeItem("mobile_notes")
+        sessionStorage.removeItem("associated_media")
     })
     
 }
