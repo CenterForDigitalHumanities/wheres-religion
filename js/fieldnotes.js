@@ -35,7 +35,7 @@ async function getNotesInQueue() {
         allNotes.forEach(noteObject => {
             notesString +=
             `
-                <li id=${noteObject["@id"]} class="collection-item">
+                <li id="${noteObject["@id"]}" class="collection-item">
                     ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
                 </li>
             `    
@@ -65,7 +65,7 @@ async function getNotesInQueue_local() {
     allNotes.forEach(noteObject => {
         notesString +=
         `
-            <li id=${noteObject.id} class="collection-item">
+            <li id="${noteObject.id}" class="collection-item">
                 ${noteObject.value.length > 50 ? noteObject.value.substring(0, 50)+"..." : noteObject.value}
                 <i title="Tap here to remove this note." onclick="removeNote('${noteObject.id}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
             </li>
@@ -125,7 +125,7 @@ async function submitNote(event) {
         sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
         addedNotes.innerHTML +=
         `
-            <li id=${newNote["@id"]} class="collection-item">
+            <li id="${newNote["@id"]}" class="collection-item">
                 ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
             </li>
         `
@@ -169,7 +169,7 @@ function submitNote_local(event) {
     sessionStorage.setItem("mobile_notes", JSON.stringify(allNotes))
     addedNotes.innerHTML +=
     `
-        <li id=${newNote.id} class="collection-item">
+        <li id="${newNote.id}" class="collection-item">
             ${notes.value.length > 50 ? notes.value.substring(0, 50)+"..." : notes.value}
             <i title="Tap here to remove this note." onclick="removeNote('${newNote.id}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
         </li>

@@ -98,7 +98,7 @@ async function submitNotes(event) {
 function chooseNote(event, noteID, elem){
     if(elem.classList.contains("selected")){
         elem.classList.remove("selected")
-        assignNoteWrapper.classList.add("is-hidden")
+        assignNoteWrapper.setAttribute("hidden")
         event.target.classList.remove("selected")
         elem.setAttribute("noteid", "")
     }
@@ -107,7 +107,7 @@ function chooseNote(event, noteID, elem){
             e.classList.remove("selected")
         })
         elem.classList.add("selected")
-        assignNoteWrapper.classList.remove("is-hidden")
+        assignNoteWrapper.removeAttribute("hidden")
         event.target.classList.add("selected")
         elem.setAttribute("noteid", noteID)
     }

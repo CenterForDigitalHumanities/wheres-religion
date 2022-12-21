@@ -270,7 +270,7 @@ class LrMediaNotifier extends HTMLElement {
         }
         this.innerHTML = `
           <a title="${mediaObj.body.associatedMedia.items.length>0 ? "You have unprocessed media attachments":""}" class="mediaAvailable" href="media.html"><i class="material-icons">photo_library</i></a>
-          <span class="notesAvailable">${mediaObj.body.associatedMedia.items.length>0}</span>
+          <span class="notesAvailable">${mediaObj.body.associatedMedia.items.length}</span>
         `  
       }, false)
     }

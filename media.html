@@ -19,6 +19,18 @@
     <script src="js/app.js" defer></script>
     <script src="js/materialize.js"></script>
     <script src="js/init.js" defer></script>
+    <script src="js/media.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('quick-actions')[0].addAction('Entry', 'snippet_folder', '/entry.html')
+            $('quick-actions')[0].addAction('Capture Media', 'add_a_photo', '/media.html')
+            $('quick-actions')[0].addAction('Map', 'pin_drop', '/map.html')
+            var fab = document.querySelectorAll('.fixed-action-btn')
+            var instances = M.FloatingActionButton.init(fab, {
+                hoverEnabled: false
+            })
+        })
+    </script>
     <style>
         img.preview{
             max-width: 30em;
@@ -35,6 +47,11 @@
         .action{
             margin:  0px 2em;
         }
+        #addedMedia li i{
+            position: absolute;
+            right: 0;
+            top: 6px;
+        }
     </style>
 </head>
 
@@ -45,6 +62,7 @@
             <div class="row">
                 <div class="col" style="width: 100%;">
                     <h5 class="center">Upload Media of Your Surroundings</h5>
+                    <h6 id="yourLocation" class="center" hidden> Your Location Unknown </h6>
                     <div onclick="mediaCapture('camera', event)" class="center card dropdown-trigger">
                         <span title="Open your camera to take a picture or record a video" class="light">Tap Here to Use Camera</span><br>
                         <i title="Tap here to open your camera to take a picture or record a video" class="material-icons large light-blue-text">camera_enhance</i>
@@ -63,6 +81,8 @@
                     <div class="center fileName"></div>
                     <div class="center fileSize"></div>
                     <div class="center fileType"></div>
+                    <div class="center fileTime"></div>
+                    <div class="center fileCoords"></div>
                     <div class="center" id="preview">
                         
                     </div>
@@ -84,7 +104,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col" style="width: 100%">
                     <h5 class="center"> Uploaded Media </h5>
                     <ul id="addedMedia" class="collection" style="width: 100%;">
                     </ul>
@@ -93,18 +113,15 @@
         </div>
     </div>
     <site-footer></site-footer>
-    <script src="js/media.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
     <script>
-        $(document).ready(function () {
-          $('quick-actions')[0].addAction('Entry','snippet_folder','/entry.html')
-          $('quick-actions')[0].addAction('Fieldnotes','edit_note','/fieldnotes.html')
-          /**
+        /**
            * Catch user detection and trigger draw() for interfaces.
            */
             addEventListener('wrUserKnown', event => {
                 getMediaInQueue()
-            }, false)
-        })
+            }, false) 
+        
     </script>
 </body>
 
