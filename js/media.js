@@ -15,11 +15,12 @@ let user_location = navigator.geolocation.getCurrentPosition(successCallback, er
 let file_location
 
 function ConvertDMSToDD(degrees, minutes, seconds, direction) {
-    var dd = degrees + (minutes/60) + (seconds/3600);
+    var dd = degrees + minutes/60 + seconds/(60*60);
+
     if (direction == "S" || direction == "W") {
-        dd = dd * -1; 
-    }
-    return dd
+        dd = dd * -1;
+    } // Don't do anything for N or E
+    return dd;
 }
 /**
  * User has chosen and confirmed the file.  Generate the on-screen preview.
@@ -31,21 +32,23 @@ async function fileSelected(event) {
         const myData = this
         if(myData?.exifdata?.GPSLatitude?.length){
             // get latitude from exif data and calculate latitude decimal
-            const latDegree = myData.exifdata.GPSLatitude[0].numerator
-            const latMinute = myData.exifdata.GPSLatitude[1].numerator
-            const latSecond = myData.exifdata.GPSLatitude[2].numerator
+            const latDegree = myData.exifdata.GPSLatitude[0].valueOf()
+            const latMinute = myData.exifdata.GPSLatitude[1].valueOf()
+            const latSecond = myData.exifdata.GPSLatitude[2].valueOf()
             const latDirection = myData.exifdata.GPSLatitudeRef
             const latFinal = ConvertDMSToDD(latDegree, latMinute, latSecond, latDirection)
 
             // get longitude from exif data and calculate longitude decimal
-            const lonDegree = myData.exifdata.GPSLongitude[0].numerator
-            const lonMinute = myData.exifdata.GPSLongitude[1].numerator
-            const lonSecond = myData.exifdata.GPSLongitude[2].numerator
+            const lonDegree = myData.exifdata.GPSLongitude[0].valueOf()
+            const lonMinute = myData.exifdata.GPSLongitude[1].valueOf()
+            const lonSecond = myData.exifdata.GPSLongitude[2].valueOf()
             const lonDirection = myData.exifdata.GPSLongitudeRef
             const lonFinal = ConvertDMSToDD(lonDegree, lonMinute, lonSecond, lonDirection)
-
             file_location = [lonFinal, latFinal]
-            mediaPreview.querySelector('.fileCoords').innerHTML = `File Location (long, lat): [${file_location[0]}, ${file_location[1]}`
+
+            //Link out to google or something else?  Activate a 'pin on the map' UI?
+            //mediaPreview.querSelector(.'map-link').innerHTML = '<a href="http://www.google.com/maps/place/'+site[1]+','+site[0]+'" target="_blank">Google Maps</a>
+            mediaPreview.querySelector('.fileCoords').innerHTML = `File Location (long, lat): [${file_location[0]}, ${file_location[1]}]`
         }
         if(myData.lastModifiedDate){
             mediaPreview.querySelector('.fileTime').innerHTML = `Captured On: ${myData.lastModifiedDate}]`   
