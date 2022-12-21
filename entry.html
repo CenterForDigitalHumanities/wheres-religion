@@ -16,6 +16,7 @@
     <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
     <!--  Scripts-->
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="js/app.js" defer></script>
     <script src="js/materialize.js"></script>
     <script src="js/init.js" defer></script>
 </head>
@@ -28,9 +29,210 @@
                 width="400">
         </div>
     </div>
-
     <site-footer></site-footer>
-
 </body>
+
+<script>
+/**
+ * TODO
+ * The user will select an existing Archtype or generate a new Archtype.
+ * This will provide an entity URI, which should be assigned to location.hash
+ * All data created in the rest of the app will target the value of the hash. 
+ */ 
+let entity = location.hash
+// All of our notes already target this entity, so this entity is "selected"
+// If there is no hash (no entity is selected) the user needs to select one now before they can save.
+
+/**
+ * Go over each note in the queue, grab its data, assign to the designated entity and entity descriptor
+ */
+function selectEntity(event) {
+    if(location.hash){
+        // If we are selecting a new entity, then the mobile notes need to know about their new target.
+        // Loop mobile notes in sessionStorage and update their target
+    }
+    let entityID = event.target.value
+    location.hash = entityID
+}
+
+/**
+ * Go over each note in the queue, grab its data, assign to the designated entity and entity descriptor
+ */
+async function submitNotes(event) {
+    event.stopPropagation()
+    event.preventDefault()
+    if (!notes || !notes.value) {
+        return
+    }
+    const user = JSON.parse(localStorage.getItem("wr-user"))
+    if (!user || !user["@id"]) {
+        alert("You must be logged in to submit")
+        //localStorage.removeItem("wr-user")
+        //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
+        return
+    }
+    let allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+    let mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? 
+    {
+      "body":{
+        "associatedMedia":{
+           "items" : []
+        }
+      }
+    }
+    let all = [...allNotes, mediaObj]
+    for await (const descriptor of all){
+        // Turn descriptor into the correct Annotation, check if that Annotation exists
+        // If Annotation already exists, update it by adding in the text from this note
+        // If not, generate that Annotation for the entity noted in location.hash   
+
+        // Prime candidate for Promise.all()
+        await assignDescriptor(descriptor)
+    }
+    sessionStorage.removeItem("mobile_notes")
+    sessionStorage.removeItem("associated_media")
+}
+
+//From the LRDA web app.  Just a stub.  Still TODO
+function chooseNote(event, noteID, elem){
+    if(elem.classList.contains("selected")){
+        elem.classList.remove("selected")
+        assignNoteWrapper.setAttribute("hidden")
+        event.target.classList.remove("selected")
+        elem.setAttribute("noteid", "")
+    }
+    else{
+        document.querySelectorAll(".selectNote").forEach(e =>{
+            e.classList.remove("selected")
+        })
+        elem.classList.add("selected")
+        assignNoteWrapper.removeAttribute("hidden")
+        event.target.classList.add("selected")
+        elem.setAttribute("noteid", noteID)
+    }
+}
+
+// Should we be doing this with DEER or something??
+async function assignDescriptor(descriptor) {
+    const user = JSON.parse(localStorage.getItem("lr-user"))
+    if (!user || !user["@id"]) {
+        alert("You must be logged in to submit")
+        //localStorage.removeItem("wr-user")
+        //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
+        return
+    }
+    let entity = location.hash ? location.hash.slice(1) : ""
+    let key = Object.keys(descriptor.body)[0]
+    //Check if the experience already has this annotation
+    const historyWildcard = {"$exists":true, "$size":0}
+    let typeCheck = descriptor.body["@type"] ?? descriptor.body.type ?? ""
+    let bodyPropValue
+    if(typeCheck === "Set" || typeCheck == "List"){
+        bodyPropValue = `body.${key}.items`
+    }
+    else{
+        bodyPropValue = `body.${key}.value`
+    }
+    const queryObj = {
+        "type" : "Annotation",
+        "target" : entity,
+        "__rerum.history.next" : historyWildcard,
+    }
+    queryObj[bodyPropValue] = {"$exists":true}
+    const existingAssertion = await fetch("http://lived-religion.rerum.io/deer-lr/query", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(queryObj)
+    })
+    .then(response => response.json())
+    .catch(err => {return []})
+    if(existingAssertion.length){
+        let assertionToUpdate = existingAssertion[0]
+        if(typeCheck === "Set" || typeCheck == "List"){
+            assertionToUpdate.body[key].items = [...assertionToUpdate.body[key].items, ...descriptor.body[key].items]
+        }
+        else{
+            assertionToUpdate.body[key].value += " "+noteText 
+        }
+        assertionToUpdate.creator = user["@id"]
+        await fetch("http://lived-religion.rerum.io/deer-lr/update", {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(assertionToUpdate)
+        })
+        .then(resp => {
+            if(resp.ok){
+                console.log("Descriptor applied!")
+                console.log(descriptor)
+            }
+            else{
+                alert("Could not apply descriptor.")
+            }
+        })
+        .catch(err => {
+            alert("Could not apply descriptor.")
+            return err
+        })
+    }
+    else{
+        await fetch("http://lived-religion.rerum.io/deer-lr/create", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(descriptor)
+        })
+        .then(resp => {
+            if(resp.ok){
+                console.log("Descriptor applied!")
+                console.log(descriptor)
+            }
+            else{
+                alert("Could not apply descriptor.")
+            }
+        })
+        .catch(err => {
+            alert("Could not apply descriptor")
+            return err
+        })
+    }
+}
+
+//From LRDA Web App.  Just a stub.  Not sure they can even do this on entry.html.
+async function removeNote(event, noteID, noteElem, conf) {
+    if(conf){
+        if(!confirm("If you really want to remove this note, click OK.")){
+            return
+        }
+    }
+    fetch(LR.URLS.DELETE, {
+        method: "DELETE",
+        mode: "cors",
+        body: noteID
+    })
+    .then(resp => {
+        if(resp.ok){
+            noteElem.remove()
+        }
+        else{
+            alert("There was an error deleting your note.")
+        }
+    })
+    .catch(err => {
+        alert("There was an error deleting your note")
+        return err
+    })
+    const remainingElems = notesInQueue.querySelector("li")
+    if(!remainingElems){
+        notesInQueue.innerHTML = `<option disabled>Your notes queue is empty!  Have a nice day</option>`
+    }
+}
+</script>
 
 </html>

@@ -1,12 +1,60 @@
 const S3_URI_PREFIX = "https://livedreligion.s3.amazonaws.com/"
 const S3_PROXY_PREFIX = "http://s3-proxy.rerum.io/S3/"
+const successCallback = (position) => {
+  console.log(position)
+  user_location = [position.coords.longitude, position.coords.latitude]
+  yourLocation.innerHTML = `Your Position (long, lat):<br> [${position.coords.longitude}, ${position.coords.latitude}]`
+  yourLocation.removeAttribute("hidden")
+  return position
+}
+const errorCallback = (error) => {
+  console.error(error)
+  return
+}
+let user_location = navigator.geolocation.getCurrentPosition(successCallback, errorCallback)
+let file_location
 
+function ConvertDMSToDD(degrees, minutes, seconds, direction) {
+    var dd = degrees + minutes/60 + seconds/(60*60);
+
+    if (direction == "S" || direction == "W") {
+        dd = dd * -1;
+    } // Don't do anything for N or E
+    return dd;
+}
 /**
  * User has chosen and confirmed the file.  Generate the on-screen preview.
  * @param {ChangeEvent} event
  */
-function fileSelected(event) {
+async function fileSelected(event) {
     const file = event.target.files[0]
+    EXIF.getData(file, function () {
+        const myData = this
+        if(myData?.exifdata?.GPSLatitude?.length){
+            // get latitude from exif data and calculate latitude decimal
+            const latDegree = myData.exifdata.GPSLatitude[0].valueOf()
+            const latMinute = myData.exifdata.GPSLatitude[1].valueOf()
+            const latSecond = myData.exifdata.GPSLatitude[2].valueOf()
+            const latDirection = myData.exifdata.GPSLatitudeRef
+            const latFinal = ConvertDMSToDD(latDegree, latMinute, latSecond, latDirection)
+
+            // get longitude from exif data and calculate longitude decimal
+            const lonDegree = myData.exifdata.GPSLongitude[0].valueOf()
+            const lonMinute = myData.exifdata.GPSLongitude[1].valueOf()
+            const lonSecond = myData.exifdata.GPSLongitude[2].valueOf()
+            const lonDirection = myData.exifdata.GPSLongitudeRef
+            const lonFinal = ConvertDMSToDD(lonDegree, lonMinute, lonSecond, lonDirection)
+            file_location = [lonFinal, latFinal]
+
+            //Link out to google or something else?  Activate a 'pin on the map' UI?
+            //mediaPreview.querSelector(.'map-link').innerHTML = '<a href="http://www.google.com/maps/place/'+site[1]+','+site[0]+'" target="_blank">Google Maps</a>
+            mediaPreview.querySelector('.fileCoords').innerHTML = `File Location (long, lat):<br> [${file_location[0]}, ${file_location[1]}]`
+        }
+        if(myData.lastModifiedDate){
+            mediaPreview.querySelector('.fileTime').innerHTML = `Captured On: <br> ${myData.lastModifiedDate}`   
+        }
+        
+    })
     if (!file) { return }
     let fileSize = (file.size > 1024 * 1024)
         ? (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB'
@@ -94,6 +142,100 @@ function uploadFile() {
     })
 }
 
+/**
+ * Query for all the notes in the user's notes queue and paginate them.
+ */
+async function getMediaInQueue() {
+    const user = JSON.parse(localStorage.getItem("wr-user"))
+    if (!user || !user["@id"]) {
+        //alert("You must be logged in to submit a note")
+        //localStorage.removeItem("wr-user")
+        //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
+        return
+    }
+    let mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? 
+    {
+      "body":{
+        "associatedMedia":{
+           "items" : []
+        }
+      }
+    }
+    let mediaString = ""
+    mediaObj.body.associatedMedia.items.forEach(uri => {
+        let filename = uri.replace("https://livedreligion.s3.amazonaws.com/", "")
+        mediaString +=
+        `
+            <li id="${uri}" class="collection-item">
+                ${filename > 50 ? filename.substring(0, 50)+"..." : filename}
+                <i title="Tap here to remove this note." onclick="removeMedia('${uri}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+            </li>
+        `    
+    })
+    addedMedia.innerHTML = mediaString   
+}
+
+/**
+ * The upload button was clicked.  Upload the file from the selected input.
+ */
+function storeLocalMediaAssertion(uri) {
+    // Prepare a local 
+    const user = JSON.parse(localStorage.getItem("wr-user"))
+    const filename = uri.replace("https://livedreligion.s3.amazonaws.com/", "")
+    if (!user || !user["@id"]) {
+        //localStorage.removeItem("wr-user")
+        //sessionStorage.removeItem("mobile_notes")
+        //sessionStorage.removeItem("associated_media")
+        return
+    }
+    let t = location.hash ? location.hash.slice(1) : "will be assigned later"
+    let mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? {
+        "@context": "http://lived-religion.rerum.io/deer-lr/vocab/context.json",
+        "id" : Date.now(),
+        "type": "Annotation",
+        "motivation": "supplementing",
+        "target": t,
+        "body": {
+            "associatedMedia": {
+                "@type": "Set",
+                "items": []
+            }
+        },
+        "creator": user["@id"],
+    }
+    mediaObj.body.associatedMedia.items.push(uri)
+    sessionStorage.setItem("associated_media", JSON.stringify(mediaObj))
+    addedMedia.innerHTML +=
+    `
+        <li id="${uri}" class="collection-item">
+            ${filename.length > 50 ? filename.substring(0, 50)+"..." : filename}
+            <i title="Tap here to remove this note." onclick="removeMedia('${uri}')" class="material-icons small dropdown-trigger red-text secondary-content">delete_forever</i>
+        </li>
+    `
+    dispatchEvent(new CustomEvent('mediaDataUpdated', { detail: mediaObj, composed: true, bubbles: true })) 
+}
+
+/**
+ * Remove the "Note Notification" from the queue.
+ * Remove the HTML <li> element for this note, and remove it from cache. 
+ * @param {string} noteID - A unique string (probably a URI) that relates to an HTMLElement 'id' attribute
+ */
+function removeMedia(mediaID) {
+    let mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? 
+    {
+      "body":{
+        "associatedMedia":{
+           "items" : []
+        }
+      }
+    }
+    let mediaArray = mediaObj.body.associatedMedia.items
+    mediaObj.body.associatedMedia.items = mediaArray.filter(uri => uri !== mediaID)
+    document.getElementById(mediaID).remove()
+    sessionStorage.setItem("associated_media", JSON.stringify(mediaObj))
+    dispatchEvent(new CustomEvent('mediaDataUpdated', { detail: mediaObj, composed: true, bubbles: true })) 
+}
 
 /**
  * The file upload was successful.
@@ -101,6 +243,7 @@ function uploadFile() {
  */
 function uploadComplete(uri) {
     mediaPreview.querySelector('.mediastatus').innerHTML = "Upload Complete!"
+    storeLocalMediaAssertion(uri)
 }
 
 /**
@@ -114,13 +257,15 @@ function uploadFailed(message = "Upload Failed.") {
  * The file upload was cancelled.  RESET.
  */
 function uploadCancelled(message = "Upload Cancelled ☹") {
-    mediaPreview.querySelector('.fileName').replaceChildren()
-    mediaPreview.querySelector('.fileSize').replaceChildren()
-    mediaPreview.querySelector('.fileType').replaceChildren()
+    mediaPreview.querySelector('.fileName').innerHTML=""
+    mediaPreview.querySelector('.fileSize').innerHTML=""
+    mediaPreview.querySelector('.fileType').innerHTML=""
+    mediaPreview.querySelector('.fileTime').innerHTML=""
+    mediaPreview.querySelector('.fileCoords').innerHTML=""
     mediaPreview.querySelector('.mediastatus').innerHTML = message
     setTimeout(() => {
-        mediaPreview.querySelector('.mediastatus').replaceChildren()
+        mediaPreview.querySelector('.mediastatus').innerHTML=""
     }, 3000)
     document.querySelector("input.selected")?.classList.remove("selected")
-    preview.replaceChildren()
+    preview.innerHTML=""
 }

@@ -108,3 +108,35 @@ h6 {
 quick-actions nav {
   bottom:0;
 }
+lr-login{
+    position: relative;
+    float: right;
+    z-index: 2;
+    margin-right: 1em;
+    margin-top: 4px;
+    text-decoration: underline;
+}
+lr-note-notifier{
+    position: relative;
+    float: left;
+    z-index: 2;
+    left: 0em;
+    margin-top: 4px;
+}
+lr-media-notifier{
+    position: relative;
+    float: right;
+    z-index: 2;
+    margin-right: 1em;
+    margin-top: 4px;
+}
+.notesAvailable{
+  display: inline-block;
+}
+.mediaAvailable{
+  display: inline-block;
+}
+.logout{
+    color: white;
+    font-weight: bold;
+}

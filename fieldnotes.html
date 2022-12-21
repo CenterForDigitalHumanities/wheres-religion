@@ -15,6 +15,7 @@
     <link href="/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
     <!--  Scripts-->
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="/js/app.js"></script>
     <script src="/js/materialize.js"></script>
     <script src="/js/init.js" defer></script>
     <script src="/js/fieldnotes.js"></script>
@@ -23,7 +24,6 @@
         $('quick-actions')[0].addAction('Entry', 'snippet_folder', '/entry.html')
         $('quick-actions')[0].addAction('Capture Media', 'add_a_photo', '/media.html')
         $('quick-actions')[0].addAction('Map', 'pin_drop', '/map.html')
-        sessionStorage.setItem("mobile_notes", "[]")
         var fab = document.querySelectorAll('.fixed-action-btn')
         var instances = M.FloatingActionButton.init(fab, {
             hoverEnabled: false
@@ -65,61 +65,86 @@
         padding-left: 17px;
         line-height: 31px;
     }
+    .fixed-action-btn{
+        z-index: 1000;
+    }
+    #addedNotes li i{
+        position: absolute;
+        right: 0;
+/*        top: 6px;*/
+    }
     </style>
 </head>
 
 <body>
     <site-nav></site-nav>
-    <div onclick="submitNote(event)" class="ab1 fixed-action-btn hide-on-med-and-up dropdown-trigger">
+    <div onmousedown="submitNote_local(event)" id="keepNote" class="ab1 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
         <small class="iconText">keep</small>
         <a class="btn-floating btn-large light-blue">
             <i class="material-icons">data_saver_on</i>
         </a>
     </div>
-    <div onclick="cancelNote(event)" class="ab2 fixed-action-btn hide-on-med-and-up dropdown-trigger">
+    <div onmousedown="cancelNote(event)" id="clearNote" class="ab2 fixed-action-btn hide-on-med-and-up dropdown-trigger scale-transition scale-out">
         <small class="iconText">clear</small>
         <a class="btn-floating btn-large red ">
             <i class="material-icons">backspace</i>
         </a>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col center" style="width: 100%;">
+            </div>
+        </div>
     </div>
     <div class="section">
         <div class="container">
             <div class="row">
                 <div class="col center" style="width: 100%;">
                     <h4>Field Notes</h4>
-                    <small>Later you will be able to review and decide which to keep as part of the Experience</small>
-                    <textarea id="notes"></textarea>
+                    <textarea onfocusin="showActionButtons(event)" onfocusout="hideActionButtons(event)" placeholder="Send yourself a scratch note..." id="notes" ></textarea>
                 </div>
             </div>
             <div class="row hide-on-small-and-down">
                 <div class="col center" style="width: 100%;">
                     <div class="center notestatus"></div>
-                    <div onclick="submitNote(event)" class="action dropdown-trigger" style="display: inline-block;">
+                    <div onmousedown="submitNote_local(event)" class="action dropdown-trigger" style="display: inline-block;">
                         <span title="Upload this note to self for review later at a computer" class="light">Store Note</span><br>
                         <i title="Tap here to keep this note-to-self" class="material-icons medium light-blue-text">data_saver_on</i>
                     </div>
-                    <div onclick="cancelNote(event)" class="action dropdown-trigger" style="display: inline-block;">
+                    <div onmousedown="cancelNote(event)" class="action dropdown-trigger" style="display: inline-block;">
                         <span title="Forget this note, it is no good." class="light">Cancel Note</span><br>
                         <i title="Tap here to start over" class="material-icons medium light-blue-text">backspace</i>
                     </div>
                 </div>
             </div>
             <div class="row">
+                <h5 class="center"> Your Notes </h5>
                 <ul id="addedNotes" class="collection with-header">
-                    <li class="collection-header center">
-                        <h6>Submitted Notes</h6>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
-    <div class="section">
-        <div class="container">
-            <p>Original Prototype</p>
-            <img src="https://user-images.githubusercontent.com/1119165/198061377-b5f36f94-ceb5-41e1-92b8-e5b06c3ddaf2.png" width="400">
-        </div>
-    </div>
     <site-footer></site-footer>
 </body>
+<script>
+    /**
+    * Catch user detection and trigger draw() for interfaces.
+    */
+    addEventListener('wrUserKnown', event => {
+        getNotesInQueue_local()
+    }, false) 
 
+    function showActionButtons(){
+        document.querySelectorAll(".fixed-action-btn").forEach(b => {
+            b.classList.remove("scale-out")
+        })
+    }
+
+    function hideActionButtons(){
+        document.querySelectorAll(".fixed-action-btn").forEach(b => {
+            b.classList.add("scale-out")
+        })
+    }
+
+</script>
 </html>

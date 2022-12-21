@@ -17,27 +17,45 @@ class SiteNav extends HTMLElement {
     <div class="navbar-fixed hide-on-small-and-down">
       <nav class="light-blue lighten-1" role="navigation">
         <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
-          <ul class="right hide-on-med-and-down">
-            <li><a href="/dashboard.html">Dashboard<i class="material-icons right">speed</i></a></li>
-            <li><a href="/entry.html">Entry<i class="material-icons right">snippet_folder</i></a></li>
-            <li><a href="/fieldnotes.html">Fieldnotes<i class="material-icons right">edit_note</i></a></li>
+          <ul class="right">
+            <li><a href="/entry.html">Basic Facts <i class="material-icons right">snippet_foldere</i></a></li>
+            <li><a href="/fieldnotes.html">Scratch Notes <i class="material-icons right">edit_note</i></a></li>
+            <li><a href="/fieldnotes.html">Media <i class="material-icons right">add_a_photo</i></a></li>
+            <li><a href="/dashboard.html">Previous Entries <i class="material-icons right">border_color</i></a></li>
+            <li><a href="/about.html">About <i class="material-icons right">question_answer</i></a></li>
           </ul>
+          <lr-login></lr-login>
+          <lr-media-notifier></lr-media-notifier>
+          <lr-note-notifier></lr-note-notifier>
         </div>
       </nav>
     </div>
     <nav class="light-blue lighten-1 hide-on-med-and-up" role="navigation">
       <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><img src="/css/graphics/logo_clear.png" height="64" alt=""></a>
         <ul class="right hide-on-med-and-down">
-          <li><a href="/dashboard.html">Dashboard<i class="material-icons right">speed</i></a></li>
-          <li><a href="/entry.html">Entry<i class="material-icons right">snippet_folder</i></a></li>
-          <li><a href="/fieldnotes.html">Fieldnotes<i class="material-icons right">edit_note</i></a></li>
+          <li><a href="/entry.html">Entry</a></li>
+          <ul style="margin-left: 2em;">
+              <li><a href="/entry.html">Basic Facts <i class="material-icons right">snippet_foldere</i></a></li>
+              <li><a href="/fieldnotes.html">Scratch Notes <i class="material-icons right">edit_note</i></a></li>
+              <li><a href="/fieldnotes.html">Media <i class="material-icons right">add_a_photo</i></a></li>
+          </ul>
+          <li><a href="/dashboard.html">Previous Entries <i class="material-icons right">border_color</i></a></li>
+          <li><a href="/about.html">About <i class="material-icons right">question_answer</i></a></li>
         </ul>
         <ul id="nav-mobile" class="sidenav">
-          <li><a href="/dashboard.html"><i class="material-icons">speed</i>Dashboard</a></li>
-          <li><a href="/entry.html"><i class="material-icons">snippet_folder</i>Entry</a></li>
-          <li><a href="/fieldnotes.html"><i class="material-icons">edit_note</i>Fieldnotes</a></li>
+          <li><a href="/entry.html">Entry</a></li>
+          <ul style="margin-left: 2em;">
+              <li><a href="/entry.html">Basic Facts <i class="material-icons right">snippet_foldere</i></a></li>
+              <li><a href="/fieldnotes.html">Scratch Notes <i class="material-icons right">edit_note</i></a></li>
+              <li><a href="/fieldnotes.html">Media <i class="material-icons right">add_a_photo</i></a></li>
+          </ul>
+          <li><a href="/dashboard.html">Previous Entries <i class="material-icons right">border_color</i></a></li>
+          <li><a href="/about.html">About <i class="material-icons right">question_answer</i></a></li>
         </ul>
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <lr-login></lr-login>
+        <lr-media-notifier></lr-media-notifier>
+        <lr-note-notifier></lr-note-notifier>
       </div>
     </nav>
     `
@@ -117,4 +135,144 @@ class quickActions extends HTMLElement {
   }
 }
 customElements.define('quick-actions', quickActions)
+
+class LrLogin extends HTMLElement {
+    constructor() {
+        super()
+        let user = localStorage.getItem("wr-user")
+        if (user !== null) {
+            try {
+                user = JSON.parse(user)
+                this.setAttribute("wr-user", user["@id"])
+                dispatchEvent(new CustomEvent('wrUserKnown', { detail: { user: user }, composed: true, bubbles: true }))
+            } catch (err) {
+                console.log("User identity reset; unable to parse ", localStorage.getItem("wr-user"))
+                document.location.href="logout.html"
+            }
+        }
+        if (this.hasAttribute("wr-user")) {
+            //<a>${user.name}</a>
+            this.innerHTML = `<a class="logout" title="${user.name}" href="logout.html">Logout</a>`
+        } else {
+            this.innerHTML = `
+            <style>
+            backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 9000;
+                height: 93vh;
+                background-color: rgba(7,42,12,1);
+            }
+            fieldset {
+                background: #FFF;
+                box-shadow: 0 0 0 2rem #FFF, .25rem .25rem 2rem 2rem #000;
+                top: 1vh;
+                position: relative;
+                color: black;
+            }
+
+            </style>
+            <backdrop class="is-full-screen">
+            <form class="is-vertical-align is-horizontal-align">
+            <fieldset>
+            <legend>Enter User Details</legend>
+            Username
+            <input type="text" name="user" /> Password
+            <input type="password" name="pwd" />
+            <input type="submit" value="Login" />
+            <input type="button" value="Forgot" disabled />    
+            </fieldset>
+            </form>
+            </backdrop>`
+            document.body.style.overflowY = 'hidden'
+        }
+    }
+    connectedCallback() {
+        try {
+            let lrLogin = this
+            lrLogin.querySelector('FORM').onsubmit = async function(event) {
+                event.preventDefault()
+                let data = new FormData(this)
+                const userData = await login(lrLogin, data, event, false)
+            }
+        } catch (err) {
+            // already logged in or other error
+            // TODO: focus this catch
+        }
+    }
+}
+customElements.define("lr-login", LrLogin)
+
+class LrNoteNotifier extends HTMLElement {
+    constructor() {
+        super()
+        const user = localStorage.getItem("wr-user")
+        if (!user) {
+            return
+        }
+        const allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+        this.innerHTML = `
+          <a title="${allNotes.length>0 ? "You have unprocessed notes":""}" class="notesAvailable" href="fieldnotes.html"><i class="material-icons">chat</i></a>
+          <span class="notesAvailable">${allNotes.length}</span>
+        `  
+        
+    }
+    connectedCallback() {
+      /**
+      * Catch user detection and trigger draw() for interfaces.
+      */
+      addEventListener('noteDataUpdated', event => {
+        const allNotes = JSON.parse(sessionStorage.getItem("mobile_notes")) ?? []
+        this.innerHTML = `
+          <a title="${allNotes.length>0 ? "You have unprocessed notes":""}" class="notesAvailable" href="fieldnotes.html"><i class="material-icons">chat</i></a>
+          <span class="notesAvailable">${allNotes.length}</span>
+        `  
+      }, false)
+    }
+}
+customElements.define("lr-note-notifier", LrNoteNotifier)
+
+class LrMediaNotifier extends HTMLElement {
+    constructor() {
+        super()
+        const user = localStorage.getItem("wr-user")
+        if (!user) {
+            return
+        }
+        const mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? 
+        {
+          "body":{
+            "associatedMedia":{
+               "items" : []
+            }
+          }
+        }
+        this.innerHTML = `
+          <a title="${mediaObj.body.associatedMedia.items.length>0 ? "You have unprocessed media attachments":""}" class="mediaAvailable" href="media.html"><i class="material-icons">photo_library</i></a>
+          <span class="notesAvailable">${mediaObj.body.associatedMedia.items.length}</span>
+        `  
+    }
+    connectedCallback() {
+      /**
+      * Catch user detection and trigger draw() for interfaces.
+      */
+      addEventListener('mediaDataUpdated', event => {
+        const mediaObj = JSON.parse(sessionStorage.getItem("associated_media")) ?? {
+          "body":{
+            "associatedMedia":{
+               "items" : []
+            }
+          }
+        }
+        this.innerHTML = `
+          <a title="${mediaObj.body.associatedMedia.items.length>0 ? "You have unprocessed media attachments":""}" class="mediaAvailable" href="media.html"><i class="material-icons">photo_library</i></a>
+          <span class="notesAvailable">${mediaObj.body.associatedMedia.items.length}</span>
+        `  
+      }, false)
+    }
+
+    
+}
+customElements.define("lr-media-notifier", LrMediaNotifier)
 

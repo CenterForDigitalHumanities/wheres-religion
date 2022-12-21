@@ -38,14 +38,14 @@
             encoding field data.</h5>
         </div>
       </div>
-      <form class="row">
+      <form id="userLogin" class="row">
         <div class="col s12 l6 input_field">
-          <input type="text" placeholder="Username">
+          <input type="text" placeholder="Username" name="user">
         </div>
         <div class="col s12 l6 input_field">
-          <input type="password" placeholder="Password">
+          <input type="password" placeholder="Password" name="pwd">
         </div>
-        <button class="btn light-blue center" type="submit">Login</button>
+        <input class="btn light-blue center" type="submit" value="Login"/>
       </form>
       <br><br>
 
@@ -90,6 +90,24 @@
   </div>
 
   <site-footer></site-footer>
+  <script>
+      const user = localStorage.getItem("wr-user")
+      if (user !== null) {
+          try {
+              user = JSON.parse(user)
+              document.location.href = "dashboard.html"
+          } catch (err) {
+              console.log("User identity reset; unable to parse ", localStorage.getItem("wr-user"))
+              document.location.href="logout.html"
+          }
+      }
+      userLogin.onsubmit = async function(event) {
+          event.preventDefault()
+          let data = new FormData(this)
+          const userData = await login(lrLogin, data, event, true)
+      }
+      
+  </script>
 </body>
 
 </html>
