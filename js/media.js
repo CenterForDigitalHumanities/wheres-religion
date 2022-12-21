@@ -51,7 +51,7 @@ async function fileSelected(event) {
             mediaPreview.querySelector('.fileCoords').innerHTML = `File Location (long, lat): [${file_location[0]}, ${file_location[1]}]`
         }
         if(myData.lastModifiedDate){
-            mediaPreview.querySelector('.fileTime').innerHTML = `Captured On: ${myData.lastModifiedDate}]`   
+            mediaPreview.querySelector('.fileTime').innerHTML = `Captured On: ${myData.lastModifiedDate}`   
         }
         
     })
