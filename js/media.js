@@ -3,7 +3,7 @@ const S3_PROXY_PREFIX = "http://s3-proxy.rerum.io/S3/"
 const successCallback = (position) => {
   console.log(position)
   user_location = [position.coords.longitude, position.coords.latitude]
-  yourLocation.innerHTML = `Your Position (long, lat): [${position.coords.longitude}, ${position.coords.latitude}]`
+  yourLocation.innerHTML = `Your Position (long, lat):<br> [${position.coords.longitude}, ${position.coords.latitude}]`
   yourLocation.removeAttribute("hidden")
   return position
 }
@@ -48,10 +48,10 @@ async function fileSelected(event) {
 
             //Link out to google or something else?  Activate a 'pin on the map' UI?
             //mediaPreview.querSelector(.'map-link').innerHTML = '<a href="http://www.google.com/maps/place/'+site[1]+','+site[0]+'" target="_blank">Google Maps</a>
-            mediaPreview.querySelector('.fileCoords').innerHTML = `File Location (long, lat): [${file_location[0]}, ${file_location[1]}]`
+            mediaPreview.querySelector('.fileCoords').innerHTML = `File Location (long, lat):<br> [${file_location[0]}, ${file_location[1]}]`
         }
         if(myData.lastModifiedDate){
-            mediaPreview.querySelector('.fileTime').innerHTML = `Captured On: ${myData.lastModifiedDate}`   
+            mediaPreview.querySelector('.fileTime').innerHTML = `Captured On: <br> ${myData.lastModifiedDate}`   
         }
         
     })
@@ -257,13 +257,15 @@ function uploadFailed(message = "Upload Failed.") {
  * The file upload was cancelled.  RESET.
  */
 function uploadCancelled(message = "Upload Cancelled ☹") {
-    mediaPreview.querySelector('.fileName').replaceChildren()
-    mediaPreview.querySelector('.fileSize').replaceChildren()
-    mediaPreview.querySelector('.fileType').replaceChildren()
+    mediaPreview.querySelector('.fileName').innerHTML=""
+    mediaPreview.querySelector('.fileSize').innerHTML=""
+    mediaPreview.querySelector('.fileType').innerHTML=""
+    mediaPreview.querySelector('.fileTime').innerHTML=""
+    mediaPreview.querySelector('.fileCoords').innerHTML=""
     mediaPreview.querySelector('.mediastatus').innerHTML = message
     setTimeout(() => {
-        mediaPreview.querySelector('.mediastatus').replaceChildren()
+        mediaPreview.querySelector('.mediastatus').innerHTML=""
     }, 3000)
     document.querySelector("input.selected")?.classList.remove("selected")
-    preview.replaceChildren()
+    preview.innerHTML=""
 }
